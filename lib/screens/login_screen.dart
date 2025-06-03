@@ -14,7 +14,7 @@ import '../services/localization_service.dart';
 import 'register_screen.dart';
 import 'user_locations_screen.dart';
 import 'voxpopuli.dart'; // pretpostavljamo da ovaj fajl sadrži VoxPopuliScreen
-import 'package:conexa/screens/onboarding_screen.dart';
+import 'onboarding_screen.dart';
 import 'affiliate_intro_screen.dart';
 
 class LanguageItem {

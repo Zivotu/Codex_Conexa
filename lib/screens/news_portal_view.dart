@@ -33,7 +33,7 @@ import 'full_screen_bulletin.dart';
 import 'document_preview_screen.dart';
 import 'parking_community_screen.dart';
 import '../commute_screens/commute_ride_detail_screen.dart';
-import 'package:conexa/screens/group_chat_page.dart';
+import 'group_chat_page.dart';
 
 // Ekrani za navigaciju prema kategorijama
 import '../local/screens/local_home_screen.dart'; // Postovi – očekuje username i locationAdmin

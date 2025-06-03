@@ -8,7 +8,7 @@ import 'package:logging/logging.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'post_detail_screen.dart';
-import 'package:conexa/services/localization_service.dart'; // Import za lokalizaciju
+import '../../services/localization_service.dart'; // Import za lokalizaciju
 
 class PostWidget extends StatefulWidget {
   final Map<String, dynamic> postData;

@@ -1,6 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:conexa/services/localization_service.dart'; // Import lokalizacije
+import '../../services/localization_service.dart'; // Import lokalizacije
 
 Future<String> getCurrentNeighborhood(
     {bool isAnonymous = false,

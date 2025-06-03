@@ -2,7 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:logger/logger.dart';
-import 'package:conexa/services/localization_service.dart';
+import '../../services/localization_service.dart';
 import '../constants/location_constants.dart';
 
 class PostService {

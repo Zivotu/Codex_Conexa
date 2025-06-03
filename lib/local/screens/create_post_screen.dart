@@ -13,7 +13,7 @@ import '../services/location_service.dart';
 import 'package:geocoding/geocoding.dart';
 
 import 'package:provider/provider.dart'; // Za pristup ChangeNotifieru
-import 'package:conexa/services/localization_service.dart';
+import '../../services/localization_service.dart';
 import 'package:permission_handler/permission_handler.dart'; // Dodano za kameru
 
 import '../constants/location_constants.dart'; // Za UNKNOWN ako nedostaje

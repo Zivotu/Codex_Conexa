@@ -14,7 +14,7 @@ import 'screens/security_screen.dart';
 import 'screens/alarm_screen.dart';
 import 'screens/notifications_screen.dart' as user_notifications;
 import 'screens/create_blog_screen.dart' as create_blog;
-import 'package:conexa/screens/profile_screen.dart';
+import 'screens/profile_screen.dart';
 import 'screens/create_location_screen.dart';
 import 'screens/marketplace_screen.dart';
 import 'screens/add_article_screen.dart';

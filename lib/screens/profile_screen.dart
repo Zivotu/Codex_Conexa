@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../services/user_service.dart';
-import 'package:conexa/screens/edit_profile_screen.dart'; // Provjerite ovu liniju
+import 'edit_profile_screen.dart'; // Provjerite ovu liniju
 
 class ProfileScreen extends StatefulWidget {
   final String username;

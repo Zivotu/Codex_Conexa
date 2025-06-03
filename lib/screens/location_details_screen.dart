@@ -14,11 +14,11 @@ import 'affiliate_dashboard_screen.dart';
 
 // Uvezite svoje servise i ekrane
 import '../services/location_service.dart';
-import 'package:conexa/local/services/post_service.dart';
+import '../local/services/post_service.dart';
 import 'location_settings_screen.dart';
 import 'classic_mode.dart' as classic;
 import 'funny_mode.dart'; // Ako koristite FunnyMode, inače NewsPortalView.
-import 'package:conexa/local/screens/local_home_screen.dart';
+import '../local/screens/local_home_screen.dart';
 import 'user_locations_screen.dart';
 import 'join_location_screen.dart';
 import 'create_location_screen.dart';
@@ -148,18 +148,36 @@ class LocationDetailsScreenState extends State<LocationDetailsScreen> {
   @override
   void initState() {
     super.initState();
+
+    // 1) Inicijalno instanciramo _pageController na page 0
+    _pageController = PageController(initialPage: 0);
+
+    // 2) Spremimo username odmah
     _username = widget.username;
+
+    // 3) Učitavamo zadnji „mode” iz SharedPreferences.
+    //    Kad dobijemo initialPage, jednostavno skoknemo na tu stranicu
     _loadLastMode().then((initialPage) {
-      _currentPage = initialPage;
-      _pageController = PageController(initialPage: initialPage);
-      setState(() {});
+      setState(() {
+        _currentPage = initialPage;
+        // umjesto ponovne instancijacije PageControllera,
+        // samo preskačemo na tu stranicu
+        _pageController.jumpToPage(initialPage);
+      });
     });
+
+    // 4) Pokrećemo ostale async funkcije
     _determineUserLocation();
     _fetchData();
     _checkUserType();
+
+    // 5) Inicijaliziramo LocalizationService
     Provider.of<LocalizationService>(context, listen: false).init();
-    // Dohvati poruku samo jednom prilikom otvaranja ekrana
+
+    // 6) Dohvaćamo eventualnu globalnu poruku
     _fetchActiveMessage();
+
+    // 7) Provjeravamo affiliate status
     _checkIfAffiliatePartner();
   }
 

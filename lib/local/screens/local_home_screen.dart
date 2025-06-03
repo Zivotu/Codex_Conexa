@@ -18,7 +18,7 @@ import 'create_post_screen.dart';
 import '../../screens/user_locations_screen.dart';
 import 'post_detail_screen.dart';
 import 'like_notifications_screen.dart';
-import 'package:conexa/local/services/post_correction_service.dart';
+import '../services/post_correction_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../constants/location_constants.dart';

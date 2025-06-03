@@ -8,7 +8,7 @@ import '../services/navigation_service.dart';
 import '../services/user_service.dart';
 import '../services/localization_service.dart';
 import '../models/repair_request.dart';
-import 'package:conexa/screens/voxpopuli.dart';
+import 'voxpopuli.dart';
 import 'package:get_it/get_it.dart';
 import 'wise_owl.dart';
 import 'dart:convert';
@@ -16,10 +16,10 @@ import 'package:http/http.dart' as http;
 import 'package:firebase_storage/firebase_storage.dart';
 import '../screens/ad_detail_screen.dart';
 import '../widgets/animated_category_card.dart';
-import '/screens/readings_screen.dart';
+import 'readings_screen.dart';
 import '../commute_screens/commute_rides_list_screen.dart';
-import 'package:conexa/screens/snow_cleaning_screen.dart';
-import 'package:conexa/screens/admin_vox_populi_screen.dart';
+import 'snow_cleaning_screen.dart';
+import 'admin_vox_populi_screen.dart';
 
 /// Pomoćna metoda za dobivanje status detalja iz RepairRequest podataka.
 Map<String, dynamic> getRepairStatusDetails(

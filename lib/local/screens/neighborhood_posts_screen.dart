@@ -6,7 +6,7 @@ import 'post_detail_screen.dart';
 import 'post_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:conexa/services/localization_service.dart';
+import '../../services/localization_service.dart';
 import 'package:provider/provider.dart';
 
 /// ✨ MODEL ZA FILTER (ChangeNotifier)

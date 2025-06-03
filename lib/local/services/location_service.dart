@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
-import 'package:conexa/services/localization_service.dart'; // Import za lokalizaciju
+import '../../services/localization_service.dart'; // Import za lokalizaciju
 
 import '../constants/location_constants.dart'; // NOVI import za konstante
 

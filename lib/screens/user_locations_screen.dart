@@ -5,7 +5,7 @@ import 'package:logger/logger.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
-import 'package:conexa/local/screens/local_home_screen.dart';
+import '../local/screens/local_home_screen.dart';
 import 'location_details_screen.dart';
 import 'create_location_screen.dart';
 import 'join_location_screen.dart';
