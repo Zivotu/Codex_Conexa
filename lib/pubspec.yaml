@@ -1,0 +1,263 @@
+name: conexa
+description: "A new Flutter project."
+publish_to: 'none'
+version: 1.0.1+141
+
+
+environment:
+  sdk: '>=3.4.1 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.19.0
+  package_info_plus: ^8.1.0
+  get_storage: ^2.1.1
+  firebase_core: ^3.1.1
+  firebase_messaging: ^15.1.5
+  file_picker: ^10.1.2
+  sqflite: ^2.0.0+4
+  path: ^1.8.0
+  share_plus: ^10.1.2
+  path_provider: ^2.0.14
+  logger: ^2.3.0
+  cross_file: ^0.3.3
+  uuid: ^4.4.0
+  video_player: ^2.9.1
+  chewie: ^1.3.0
+  provider: ^6.0.5
+  table_calendar: ^3.0.8
+  firebase_analytics: ^11.0.1
+  firebase_database: ^11.0.1
+  firebase_auth: ^5.1.0
+  image_picker: ^1.1.2
+  giphy_picker: ^3.0.2
+  giphy_get: ^3.5.5
+  cloud_firestore: ^5.0.1
+  firebase_storage: ^12.0.1
+  calendar_date_picker2: ^2.0.0
+  flutter_polls: ^0.1.6
+  flutter_exif_rotation: ^0.5.2
+  lottie: ^3.1.3 
+  
+  mobile_scanner: ^6.0.2
+  flutter_local_notifications: ^19.1.0
+  qr_flutter: ^4.1.0 
+  dio: ^5.4.3 
+  open_file: ^3.2.1 
+  universal_io: ^2.2.2
+  fl_chart: ^0.70.2
+  http: ^1.2.2
+  rxdart: ^0.28.0
+  google_sign_in: ^6.2.1
+  
+  flutter_pdfview: ^1.3.2
+  cached_network_image: ^3.3.1
+  video_compress: ^3.1.0
+  logging: ^1.2.0
+  url_launcher: ^6.3.1
+  firebase_remote_config: ^5.0.3
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  permission_handler: ^12.0.0+1
+  firebase_app_check: ^0.3.0+3
+  pull_to_refresh: ^2.0.0
+  geolocator: ^14.0.0
+  geocoding: ^3.0.0
+  
+  image: ^4.2.0
+  native_device_orientation: ^2.0.3
+  flutter_svg: ^2.0.16
+  google_maps_flutter: ^2.9.0
+  google_fonts: 6.2.1
+  get_it: ^8.0.2
+  sensors_plus: ^6.1.0
+  fluttertoast: ^8.2.12
+  shimmer: ^3.0.0
+  exif: ^3.3.0
+  pdf: ^3.11.1
+  flutter_inappwebview: ^6.1.5
+  purchases_flutter: ^8.5.0
+  
+  
+  syncfusion_flutter_pdfviewer: ^29.1.38
+  
+  
+  shared_preferences: ^2.1.0
+  flutter_image_compress: ^2.3.0
+  crypto: ^3.0.0
+  flutter_rating_bar: ^4.0.0
+  flutter_foreground_task: ^9.1.0
+  maps_launcher: ^3.0.0+1
+  firebase_dynamic_links: ^6.0.10
+  visibility_detector: ^0.4.0+2
+  firebase_crashlytics: ^4.1.5
+  device_info_plus: ^11.3.3
+  flutter_native_splash: ^2.2.19
+  font_awesome_flutter: ^10.4.0
+  in_app_purchase: ^3.2.1
+  in_app_purchase_android: ^0.4.0
+  flutter_typeahead: ^5.2.0
+  printing: ^5.13.4
+  confetti: ^0.6.0
+  flutter_polyline_points: ^2.1.0
+  collection: ^1.16.0
+  country_picker: ^2.0.21
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.1
+  hive_generator: ^2.0.1
+  build_runner: ^2.3.3
+  intl_utils: any
+  connectivity_plus: ^6.1.3
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/app_icon.png"
+  remove_alpha_ios: true
+
+flutter:
+  generate: true
+  uses-material-design: true
+  assets:
+    - assets/images/chat.png
+    - assets/images/feedback.png
+    - assets/images/blog.png
+    - assets/images/documents.png
+    - assets/images/bulletin.png
+    - assets/images/construction.png
+    - assets/images/conexa_bg.png
+    - assets/images/report.png
+    - assets/images/security.png
+    - assets/images/alarm.png
+    - assets/images/settings.png
+    - assets/images/games.png
+    - assets/images/notifications.png
+    - assets/images/article1.png
+    - assets/images/conexa_bg_1.png
+    - assets/images/green_light_1.png
+    - assets/images/red_light_1.png
+    - assets/images/locations/location1.png
+    - assets/images/locations/location2.png
+    - assets/images/locations/location3.png
+    - assets/images/locations/location4.png
+    - assets/images/locations/location5.png
+    - assets/images/locations/location6.png
+    - assets/images/locations/location7.png
+    - assets/images/locations/location8.png
+    - assets/images/locations/location9.png
+    - assets/images/noisy.png
+    - assets/images/repair.png
+    - assets/images/tenant.png
+    - assets/images/document_icon.png
+    - assets/images/work_icon.png
+    - assets/images/bulletin_icon.png
+    - assets/images/chat_icon.png
+    - assets/images/alarm.png
+    - assets/images/Profile_pic_1.png
+    - assets/images/Profile_pic_2.png
+    - assets/images/Profile_pic_3.png
+    - assets/images/Profile_pic_4.png
+    - assets/images/Profile_pic_5.png
+    - assets/serviceAccountKey.json
+    - assets/images/default_user.png
+    - assets/images/default_image.jpg
+    - assets/sounds/warning.mp3
+    - assets/sounds/wrong.mp3
+    - assets/sounds/correct.mp3
+    - assets/sounds/alarm.mp3
+    - assets/images/owl_2.jpg
+    - assets/images/marketplace_1.jpg
+    - assets/images/owl_1a.jpg
+    - assets/images/conexa_mobile_home_bg_1.jpg
+    - assets/images/update_bg_1.jpg
+    - assets/images/login_anim_1.mp4
+    - assets/images/register_anim_1.mp4
+    - assets/images/services.png
+    - assets/neighborhoods.json
+    - assets/flyers/flyer_1.pdf
+    - assets/flyers/flyer_2.pdf
+    - assets/flyers/flyer_3.pdf
+    - assets/images/flyers_1.png
+    - assets/images/update_2.jpg
+    - assets/images/update_3.jpg
+    - assets/images/update_4.jpg
+    - assets/images/update_5.jpg
+    - assets/images/update_6.jpg
+    - assets/images/update_7.jpg
+    - assets/images/update_8.jpg
+    - assets/images/user_default.png
+    - assets/update_info.json
+    - assets/images/conexa_user_loc_home_bg_1.jpg
+    - assets/lang/en.json
+    - assets/lang/ar.json
+    - assets/lang/bn.json
+    - assets/lang/da.json
+    - assets/lang/de.json
+    - assets/lang/es.json
+    - assets/lang/fa.json
+    - assets/lang/fi.json
+    - assets/lang/fr.json
+    - assets/lang/hi.json
+    - assets/lang/hu.json
+    - assets/lang/hr.json
+    - assets/lang/id.json
+    - assets/lang/is.json
+    - assets/lang/it.json
+    - assets/lang/ja.json
+    - assets/lang/ko.json
+    - assets/lang/no.json
+    - assets/lang/pl.json
+    - assets/lang/pt.json
+    - assets/lang/ru.json
+    - assets/lang/sl.json
+    - assets/lang/sv.json
+    - assets/lang/th.json
+    - assets/lang/tr.json
+    - assets/lang/vi.json
+    - assets/lang/bs.json
+    - assets/lang/nl.json
+    - assets/lang/ro.json
+    - assets/lang/sr.json
+
+    - assets/funfacts_1.json
+    - assets/images/owl_vertical_bg_1.jpg
+    - assets/sayings/sayings.json
+    - assets/images/marketplace_info.png
+    - assets/images/info_notices.png
+    - assets/images/info_chat.png
+    - assets/images/info_services.png
+    - assets/images/info_bulletin.png
+    - assets/images/info_alarm.png
+    - assets/images/info_construction.png
+    - assets/images/default_avatar.png
+    - assets/images/snow_1.png
+    - assets/images/readings_1.png
+    - assets/images/comments.png
+    - assets/images/ai_asisstant.png
+    - assets/images/parking.png
+    - assets/images/frame.png
+    - assets/hr_hints.json
+    - assets/images/car_icon.png
+    - assets/demo_lang/demo_lang.json
+    - assets/demo_lang/demo_bulletin.json
+    
+    - assets/images/conexa_intro.mp4
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter_18pt-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Inter_18pt-Bold.ttf
+          weight: 700
+    - family: WorkSans
+      fonts:
+        - asset: assets/fonts/WorkSans-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/PatrickHand-Regular.ttf
+        - asset: assets/fonts/Lato-Regular.ttf
