@@ -7,6 +7,7 @@ import 'package:logger/logger.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/user_service.dart';
 import '../services/fcm_service.dart';
@@ -298,31 +299,23 @@ class LoginScreenState extends State<LoginScreen> {
                     Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.7),
+                        color: Colors.white.withOpacity(0.6),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           IconButton(
-                            icon: const Text("in",
-                                style: TextStyle(fontSize: 20)),
+                            icon: const FaIcon(FontAwesomeIcons.linkedin),
+                            tooltip: 'LinkedIn',
                             onPressed: () => _launchURL(
                                 "https://www.linkedin.com/company/conexalife"),
                           ),
-                          const SizedBox(width: 8),
                           IconButton(
-                            icon: const Text("🐦",
-                                style: TextStyle(fontSize: 20)),
+                            icon: const FaIcon(FontAwesomeIcons.twitter),
+                            tooltip: 'Twitter',
                             onPressed: () =>
                                 _launchURL("https://x.com/Conexa_App"),
-                          ),
-                          const SizedBox(width: 8),
-                          IconButton(
-                            icon:
-                                const Text("f", style: TextStyle(fontSize: 20)),
-                            onPressed: () => _launchURL(
-                                "https://www.facebook.com/profile.php?id=61574791718815"),
                           ),
                         ],
                       ),
