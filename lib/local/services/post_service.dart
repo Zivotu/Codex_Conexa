@@ -117,17 +117,13 @@ class PostService {
     try {
       CollectionReference postCollection;
 
-      DateTime createdAt;
-      if (postData['createdAt'] is Timestamp) {
-        createdAt = (postData['createdAt'] as Timestamp).toDate();
-      } else if (postData['createdAt'] is DateTime) {
-        createdAt = postData['createdAt'] as DateTime;
-      } else {
-        createdAt = DateTime.now();
-      }
+      // Determine the year and month based on the provided [fromDate]
+      // so that the correct monthly collection can be queried. If no
+      // starting date is supplied, default to the current date.
+      DateTime referenceDate = fromDate ?? DateTime.now();
 
-      final String year = createdAt.year.toString();
-      final String month = createdAt.month.toString().padLeft(2, '0');
+      final String year = referenceDate.year.toString();
+      final String month = referenceDate.month.toString().padLeft(2, '0');
 
       if (isUnknownLocation) {
         postCollection = _firestore
