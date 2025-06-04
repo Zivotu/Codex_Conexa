@@ -58,7 +58,15 @@ class PostDetailScreenState extends State<PostDetailScreen> {
         "postId: $postId, userId: $userId, country: $country, city: $city, neighborhood: $neighborhood, isVideo: $isVideo");
 
     if (postId.isNotEmpty && userId.isNotEmpty) {
-      _postService.updatePostViews(postId, userId, country, city, neighborhood);
+      final DateTime createdAt = (widget.post['createdAt'] as Timestamp).toDate();
+      _postService.updatePostViews(
+        postId,
+        userId,
+        country,
+        city,
+        neighborhood,
+        createdAt,
+      );
     }
 
     if (isVideo) {
@@ -136,9 +144,12 @@ class PostDetailScreenState extends State<PostDetailScreen> {
         return;
       }
 
-      try {
-        final String metricsPath =
-            'local_community/$countryId/cities/$cityId/neighborhoods/$neighborhoodId/metrics_${DateTime.now().year}_${DateTime.now().month.toString().padLeft(2, '0')}/$postId';
+        try {
+          final DateTime createdAt = (widget.post['createdAt'] as Timestamp).toDate();
+          final String year = createdAt.year.toString();
+          final String month = createdAt.month.toString().padLeft(2, '0');
+          final String metricsPath =
+              'local_community/$countryId/cities/$cityId/neighborhoods/$neighborhoodId/metrics_${year}_${month}/$postId';
 
         await FirebaseFirestore.instance.doc(metricsPath).set(
           {
@@ -209,8 +220,11 @@ class PostDetailScreenState extends State<PostDetailScreen> {
         return;
       }
 
-      final String metricsPath =
-          'local_community/$country/cities/$city/neighborhoods/$neighborhood/metrics_${DateTime.now().year}_${DateTime.now().month.toString().padLeft(2, '0')}/$postId';
+        final DateTime createdAt = (widget.post['createdAt'] as Timestamp).toDate();
+        final String year = createdAt.year.toString();
+        final String month = createdAt.month.toString().padLeft(2, '0');
+        final String metricsPath =
+            'local_community/$country/cities/$city/neighborhoods/$neighborhood/metrics_${year}_${month}/$postId';
 
       DocumentSnapshot metricsSnapshot =
           await FirebaseFirestore.instance.doc(metricsPath).get();
@@ -297,10 +311,13 @@ class PostDetailScreenState extends State<PostDetailScreen> {
 
       WriteBatch batch = FirebaseFirestore.instance.batch();
 
-      final String metricsPath =
-          'local_community/$country/cities/$city/neighborhoods/$neighborhood/metrics_${DateTime.now().year}_${DateTime.now().month.toString().padLeft(2, '0')}/$postId';
-      final String postPath =
-          'local_community/$country/cities/$city/neighborhoods/$neighborhood/posts_${DateTime.now().year}_${DateTime.now().month.toString().padLeft(2, '0')}/$postId';
+        final DateTime createdAt = (widget.post['createdAt'] as Timestamp).toDate();
+        final String year = createdAt.year.toString();
+        final String month = createdAt.month.toString().padLeft(2, '0');
+        final String metricsPath =
+            'local_community/$country/cities/$city/neighborhoods/$neighborhood/metrics_${year}_${month}/$postId';
+        final String postPath =
+            'local_community/$country/cities/$city/neighborhoods/$neighborhood/posts_${year}_${month}/$postId';
 
       final DocumentReference communityMetricsRef =
           FirebaseFirestore.instance.doc(metricsPath);
@@ -365,10 +382,13 @@ class PostDetailScreenState extends State<PostDetailScreen> {
 
       WriteBatch batch = FirebaseFirestore.instance.batch();
 
-      final String metricsPath =
-          'local_community/$country/cities/$city/neighborhoods/$neighborhood/metrics_${DateTime.now().year}_${DateTime.now().month.toString().padLeft(2, '0')}/$postId';
-      final String postPath =
-          'local_community/$country/cities/$city/neighborhoods/$neighborhood/posts_${DateTime.now().year}_${DateTime.now().month.toString().padLeft(2, '0')}/$postId';
+        final DateTime createdAt = (widget.post['createdAt'] as Timestamp).toDate();
+        final String year = createdAt.year.toString();
+        final String month = createdAt.month.toString().padLeft(2, '0');
+        final String metricsPath =
+            'local_community/$country/cities/$city/neighborhoods/$neighborhood/metrics_${year}_${month}/$postId';
+        final String postPath =
+            'local_community/$country/cities/$city/neighborhoods/$neighborhood/posts_${year}_${month}/$postId';
 
       final DocumentReference communityMetricsRef =
           FirebaseFirestore.instance.doc(metricsPath);
@@ -450,9 +470,12 @@ class PostDetailScreenState extends State<PostDetailScreen> {
       return;
     }
 
-    try {
-      final String metricsPath =
-          'local_community/$country/cities/$city/neighborhoods/$neighborhood/metrics_${DateTime.now().year}_${DateTime.now().month.toString().padLeft(2, '0')}/$postId';
+      try {
+        final DateTime createdAt = (widget.post['createdAt'] as Timestamp).toDate();
+        final String year = createdAt.year.toString();
+        final String month = createdAt.month.toString().padLeft(2, '0');
+        final String metricsPath =
+            'local_community/$country/cities/$city/neighborhoods/$neighborhood/metrics_${year}_${month}/$postId';
 
       await FirebaseFirestore.instance.doc(metricsPath).set(
         {

@@ -38,8 +38,17 @@ class PostService {
         postData['localLocationId'] = LocationConstants.UNKNOWN_LOCATION;
       }
 
-      final String year = DateTime.now().year.toString();
-      final String month = DateTime.now().month.toString().padLeft(2, '0');
+      DateTime createdAt;
+      if (postData['createdAt'] is Timestamp) {
+        createdAt = (postData['createdAt'] as Timestamp).toDate();
+      } else if (postData['createdAt'] is DateTime) {
+        createdAt = postData['createdAt'] as DateTime;
+      } else {
+        createdAt = DateTime.now();
+      }
+
+      final String year = createdAt.year.toString();
+      final String month = createdAt.month.toString().padLeft(2, '0');
 
       // ------------- GEO-KOLEKCIJA -------------
       final String geoPath = postData.containsKey('localLocationId') &&
@@ -81,6 +90,7 @@ class PostService {
         cityId,
         neighborhood,
         postId,
+        createdAt,
         likes: 0,
         dislikes: 0,
         views: 0,
@@ -107,8 +117,17 @@ class PostService {
     try {
       CollectionReference postCollection;
 
-      final String year = DateTime.now().year.toString();
-      final String month = DateTime.now().month.toString().padLeft(2, '0');
+      DateTime createdAt;
+      if (postData['createdAt'] is Timestamp) {
+        createdAt = (postData['createdAt'] as Timestamp).toDate();
+      } else if (postData['createdAt'] is DateTime) {
+        createdAt = postData['createdAt'] as DateTime;
+      } else {
+        createdAt = DateTime.now();
+      }
+
+      final String year = createdAt.year.toString();
+      final String month = createdAt.month.toString().padLeft(2, '0');
 
       if (isUnknownLocation) {
         postCollection = _firestore
@@ -164,8 +183,17 @@ class PostService {
     Map<String, dynamic> postData,
   ) async {
     try {
-      final String year = DateTime.now().year.toString();
-      final String month = DateTime.now().month.toString().padLeft(2, '0');
+      DateTime createdAt;
+      if (postData['createdAt'] is Timestamp) {
+        createdAt = (postData['createdAt'] as Timestamp).toDate();
+      } else if (postData['createdAt'] is DateTime) {
+        createdAt = postData['createdAt'] as DateTime;
+      } else {
+        createdAt = DateTime.now();
+      }
+
+      final String year = createdAt.year.toString();
+      final String month = createdAt.month.toString().padLeft(2, '0');
 
       final postRef = _firestore
           .collection('local_community')
@@ -213,6 +241,7 @@ class PostService {
         cityId,
         neighborhoodId,
         postId,
+        createdAt,
         likes: 1,
       );
     } catch (e) {
@@ -232,8 +261,17 @@ class PostService {
     Map<String, dynamic> postData,
   ) async {
     try {
-      final String year = DateTime.now().year.toString();
-      final String month = DateTime.now().month.toString().padLeft(2, '0');
+      DateTime createdAt;
+      if (postData['createdAt'] is Timestamp) {
+        createdAt = (postData['createdAt'] as Timestamp).toDate();
+      } else if (postData['createdAt'] is DateTime) {
+        createdAt = postData['createdAt'] as DateTime;
+      } else {
+        createdAt = DateTime.now();
+      }
+
+      final String year = createdAt.year.toString();
+      final String month = createdAt.month.toString().padLeft(2, '0');
 
       final postRef = _firestore
           .collection('local_community')
@@ -271,6 +309,7 @@ class PostService {
         cityId,
         neighborhoodId,
         postId,
+        createdAt,
         shares: 1,
       );
     } catch (e) {
@@ -287,10 +326,11 @@ class PostService {
     String countryId,
     String cityId,
     String neighborhoodId,
+    DateTime createdAt,
   ) async {
     try {
-      final String year = DateTime.now().year.toString();
-      final String month = DateTime.now().month.toString().padLeft(2, '0');
+      final String year = createdAt.year.toString();
+      final String month = createdAt.month.toString().padLeft(2, '0');
 
       final postRef = _firestore
           .collection('local_community')
@@ -323,6 +363,7 @@ class PostService {
         cityId,
         neighborhoodId,
         postId,
+        createdAt,
         views: 1,
       );
     } catch (e) {
@@ -338,10 +379,11 @@ class PostService {
     String cityId,
     String neighborhoodId,
     String postId,
+    DateTime createdAt,
   ) async {
     try {
-      final String year = DateTime.now().year.toString();
-      final String month = DateTime.now().month.toString().padLeft(2, '0');
+      final String year = createdAt.year.toString();
+      final String month = createdAt.month.toString().padLeft(2, '0');
 
       final metricsRef = _firestore
           .collection('local_community')
@@ -419,15 +461,16 @@ class PostService {
     String countryId,
     String cityId,
     String neighborhoodId,
-    String postId, {
+    String postId,
+    DateTime createdAt, {
     int likes = 0,
     int dislikes = 0,
     int views = 0,
     int shares = 0,
   }) async {
     try {
-      final String year = DateTime.now().year.toString();
-      final String month = DateTime.now().month.toString().padLeft(2, '0');
+      final String year = createdAt.year.toString();
+      final String month = createdAt.month.toString().padLeft(2, '0');
 
       final CollectionReference metricsCollection =
           (countryId == LocationConstants.UNKNOWN_COUNTRY &&
