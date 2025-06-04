@@ -914,20 +914,9 @@ ${bulletin.description}
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    localizationService.translate('select_ad_type') ??
-                        'Select ad type:',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
                 DropdownButton<String>(
                   value: _selectedAdType,
-                  items: ['Internal', 'All'].map((type) {
+                  items: ['All', 'Internal'].map((type) {
                     return DropdownMenuItem<String>(
                       value: type,
                       child: Text(
