@@ -46,7 +46,7 @@ import 'bulletin_board_screen.dart'; // Bulletin – očekuje username, countryI
 // Documents – koristi se u DocumentsScreen
 
 // Dodajemo RideViewModel
-import '../viewmodels/ride_view_model.dart';
+import 'news_portal/news_portal_sections.dart';
 
 // Import DocumentsScreen (sada je navigacija u DocumentsScreen)
 import 'documents_screen.dart';
@@ -393,346 +393,6 @@ class _NewsPortalViewState extends State<NewsPortalView> {
     } catch (error) {
       debugPrint('Error reading construction data: $error');
     }
-  }
-
-  Widget _buildLastPostsSection(LocalizationService loc) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Column(
-        children: [
-          _buildModernSectionHeader(
-              Icons.article, loc.translate('last_posts') ?? "Zadnji postovi",
-              () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => LocalHomeScreen(
-                  username: widget.username,
-                  locationAdmin: widget.locationAdmin,
-                ),
-              ),
-            );
-          }),
-          FutureBuilder<List<Map<String, dynamic>>>(
-            future: _fetchLastPosts(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const SizedBox(
-                    height: 200,
-                    child: Center(child: CircularProgressIndicator()));
-              } else if (snapshot.hasError) {
-                return SizedBox(
-                    height: 200,
-                    child: Center(
-                        child: Text(loc.translate('error_loading_posts') ??
-                            "Error loading posts")));
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return SizedBox(
-                    height: 200,
-                    child: Center(
-                        child: Text(loc.translate('no_posts_available') ??
-                            "No posts available")));
-              }
-              final posts = snapshot.data!;
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: posts.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 8,
-                    childAspectRatio: 1,
-                  ),
-                  itemBuilder: (context, index) {
-                    final post = posts[index];
-                    final String imageUrl = post['mediaUrl'] as String? ?? '';
-                    final String title = post['title'] as String? ?? '';
-                    final Timestamp ts = (post['createdAt'] is Timestamp)
-                        ? post['createdAt'] as Timestamp
-                        : Timestamp.now();
-                    final DateTime createdAt = ts.toDate();
-                    final String userName = post['createdBy'] as String? ?? '';
-                    final String userLocation =
-                        post['localNeighborhoodId'] as String? ?? '';
-                    return GestureDetector(
-                      onTap: () {
-                        final postMap = {
-                          'postId': post['postId'],
-                          'userId': post['userId'] ?? '',
-                          'localCountryId': post['localCountryId'] ?? '',
-                          'localCityId': post['localCityId'] ?? '',
-                          'localNeighborhoodId':
-                              post['localNeighborhoodId'] ?? '',
-                          'isVideo': post['isVideo'] ?? false,
-                          'mediaUrl': post['mediaUrl'] ?? '',
-                          'aspectRatio': post['aspectRatio'] ?? 1.0,
-                          'createdAt': post['createdAt'] ?? Timestamp.now(),
-                          'text': post['text'] ?? '',
-                          'views': post['views'] ?? 0,
-                        };
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => PostDetailScreen(post: postMap),
-                          ),
-                        );
-                      },
-                      child: Card(
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)),
-                        clipBehavior: Clip.antiAlias,
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                                child: _buildImage(imageUrl,
-                                    width: double.infinity,
-                                    height: double.infinity,
-                                    fit: BoxFit.cover)),
-                            Positioned(
-                              bottom: 0,
-                              left: 0,
-                              right: 0,
-                              child: Container(
-                                color: Colors.black.withOpacity(0.5),
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    if (title.isNotEmpty)
-                                      Text(
-                                        title,
-                                        style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    if (userName.isNotEmpty)
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 4.0),
-                                        child: Text(
-                                          userName,
-                                          style: const TextStyle(
-                                              color: Colors.white70,
-                                              fontSize: 12),
-                                        ),
-                                      ),
-                                    if (userLocation.isNotEmpty)
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 2.0),
-                                        child: Text(
-                                          userLocation,
-                                          style: const TextStyle(
-                                              color: Colors.white70,
-                                              fontSize: 12),
-                                        ),
-                                      ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 2.0),
-                                      child: Text(
-                                        _formatTimeAgo(createdAt, loc),
-                                        style: const TextStyle(
-                                            color: Colors.white60,
-                                            fontSize: 10),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOfficialNoticesSection(LocalizationService loc) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Column(
-        children: [
-          _buildModernSectionHeader(Icons.campaign,
-              loc.translate('official_notices') ?? "Službene obavijesti", () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => BlogScreen(
-                  username: widget.username,
-                  countryId: widget.countryId,
-                  cityId: widget.cityId,
-                  locationId: widget.locationId,
-                ),
-              ),
-            );
-          }),
-          StreamBuilder<QuerySnapshot>(
-            stream: _firestore
-                .collection('countries')
-                .doc(_geoCountry.isNotEmpty ? _geoCountry : widget.countryId)
-                .collection('cities')
-                .doc(_geoCity.isNotEmpty ? _geoCity : widget.cityId)
-                .collection('locations')
-                .doc(_geoNeighborhood.isNotEmpty
-                    ? _geoNeighborhood
-                    : widget.locationId)
-                .collection('blogs')
-                .orderBy('createdAt', descending: true)
-                .limit(2)
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                    child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: CircularProgressIndicator()));
-              }
-              if (snapshot.hasError) {
-                return Center(
-                    child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text(loc.translate('error_loading_data') ??
-                            'Error loading data.')));
-              }
-              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return Center(
-                    child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text(loc.translate('no_official_notices') ??
-                            'No official notices available.')));
-              }
-              final docs = snapshot.data!.docs;
-              List<Blog> blogs = docs.map((doc) {
-                return Blog.fromMap(doc.data() as Map<String, dynamic>, doc.id);
-              }).toList();
-              return Column(
-                children: blogs.map((blog) {
-                  final String imageUrl = blog.imageUrls.isNotEmpty
-                      ? blog.imageUrls.first
-                      : 'assets/images/tenant.png';
-                  final Timestamp ts = (blog.createdAt is Timestamp)
-                      ? blog.createdAt as Timestamp
-                      : Timestamp.now();
-                  final DateTime createdAt = ts.toDate();
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => BlogDetailsScreen(
-                            blog: blog,
-                            username: widget.username,
-                            countryId: widget.countryId,
-                            cityId: widget.cityId,
-                            locationId: widget.locationId,
-                            locationAdmin: widget.locationAdmin,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Card(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                      clipBehavior: Clip.antiAlias,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Stack(
-                            children: [
-                              imageUrl.isNotEmpty
-                                  ? CachedNetworkImage(
-                                      imageUrl: imageUrl,
-                                      width: double.infinity,
-                                      height: 150,
-                                      fit: BoxFit.cover,
-                                      placeholder: (context, url) =>
-                                          const Center(
-                                              child:
-                                                  CircularProgressIndicator()),
-                                      errorWidget: (context, url, error) =>
-                                          Image.asset(
-                                        'assets/images/tenant.png',
-                                        width: double.infinity,
-                                        height: 150,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    )
-                                  : Image.asset(
-                                      'assets/images/tenant.png',
-                                      width: double.infinity,
-                                      height: 150,
-                                      fit: BoxFit.cover,
-                                    ),
-                              Positioned(
-                                bottom: 0,
-                                left: 0,
-                                right: 0,
-                                child: Container(
-                                  color: Colors.black.withOpacity(0.6),
-                                  padding: const EdgeInsets.all(8),
-                                  child: Text(
-                                    blog.title,
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              blog.content.length > 100
-                                  ? '${blog.content.substring(0, 100)}...'
-                                  : blog.content,
-                              style: const TextStyle(fontSize: 14),
-                              maxLines: 3,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Text(
-                              _formatTimeAgo(createdAt, loc),
-                              style: const TextStyle(
-                                  fontSize: 10, color: Colors.grey),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList(),
-              );
-            },
-          ),
-        ],
-      ),
-    );
   }
 
   Widget _buildMarketplaceSection(LocalizationService loc) {
@@ -1785,23 +1445,96 @@ class _NewsPortalViewState extends State<NewsPortalView> {
             child: Column(
               children: [
                 const SizedBox(height: 8),
-                _buildLastPostsSection(loc),
+                LastPostsSection(
+                  fetchPosts: _fetchLastPosts,
+                  username: widget.username,
+                  locationAdmin: widget.locationAdmin,
+                ),
                 const SizedBox(height: 16),
-                _buildOfficialNoticesSection(loc),
+                OfficialNoticesSection(
+                  username: widget.username,
+                  countryId: widget.countryId,
+                  cityId: widget.cityId,
+                  locationId: widget.locationId,
+                  geoCountry: _geoCountry,
+                  geoCity: _geoCity,
+                  geoNeighborhood: _geoNeighborhood,
+                  locationAdmin: widget.locationAdmin,
+                  firestore: _firestore,
+                ),
                 const SizedBox(height: 16),
-                _buildMarketplaceSection(loc),
+                MarketplaceSection(
+                  fetchAds: _fetchLastMarketplaceAds,
+                  username: widget.username,
+                  countryId: widget.countryId,
+                  cityId: widget.cityId,
+                  locationId: widget.locationId,
+                ),
                 const SizedBox(height: 16),
-                _buildChatRoomSection(loc),
+                ChatRoomSection(
+                  countryId: widget.countryId,
+                  cityId: widget.cityId,
+                  locationId: widget.locationId,
+                  geoCountry: _geoCountry,
+                  geoCity: _geoCity,
+                  geoNeighborhood: _geoNeighborhood,
+                  firestore: _firestore,
+                ),
                 const SizedBox(height: 16),
-                _buildParkingSection(loc),
+                ParkingSection(
+                  parkingPreview: _parkingPreview,
+                  username: widget.username,
+                  countryId: widget.countryId,
+                  cityId: widget.cityId,
+                  locationId: widget.locationId,
+                  locationAdmin: widget.locationAdmin,
+                  formatDateTime: _formatDateTime,
+                ),
                 const SizedBox(height: 16),
-                _buildCommuteSection(loc),
+                CommuteSection(
+                  commutePreview: _commutePreview,
+                  username: widget.username,
+                  countryId: widget.countryId,
+                  cityId: widget.cityId,
+                  locationId: widget.locationId,
+                  auth: _auth,
+                  smallMapControllers: _smallMapControllers,
+                  formatTimeAgo: _formatTimeAgo,
+                ),
                 const SizedBox(height: 16),
-                _buildQuizSection(loc),
+                QuizSection(
+                  username: widget.username,
+                  countryId: widget.countryId,
+                  cityId: widget.cityId,
+                  locationId: widget.locationId,
+                  geoCountry: _geoCountry,
+                  geoCity: _geoCity,
+                  geoNeighborhood: _geoNeighborhood,
+                  firestore: _firestore,
+                ),
                 const SizedBox(height: 16),
-                _buildBulletinBoardSection(loc),
+                BulletinBoardSection(
+                  username: widget.username,
+                  countryId: widget.countryId,
+                  cityId: widget.cityId,
+                  locationId: widget.locationId,
+                  geoCountry: _geoCountry,
+                  geoCity: _geoCity,
+                  geoNeighborhood: _geoNeighborhood,
+                  firestore: _firestore,
+                ),
                 const SizedBox(height: 16),
-                _buildDocumentsSection(loc),
+                DocumentsSection(
+                  username: widget.username,
+                  countryId: widget.countryId,
+                  cityId: widget.cityId,
+                  locationId: widget.locationId,
+                  geoCountry: _geoCountry,
+                  geoCity: _geoCity,
+                  geoNeighborhood: _geoNeighborhood,
+                  firestore: _firestore,
+                  openDocument: _openDocument,
+                ),
                 const SizedBox(height: 16),
                 // Mudra sova – bez navigacije
                 Card(
@@ -1833,7 +1566,13 @@ class _NewsPortalViewState extends State<NewsPortalView> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                _buildBukaSection(loc),
+                BukaSection(
+                  works: _works,
+                  username: widget.username,
+                  countryId: widget.countryId,
+                  cityId: widget.cityId,
+                  locationId: widget.locationId,
+                ),
                 const SizedBox(height: 16),
               ],
             ),
