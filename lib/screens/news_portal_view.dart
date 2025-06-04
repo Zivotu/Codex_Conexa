@@ -34,6 +34,7 @@ import 'document_preview_screen.dart';
 import 'parking_community_screen.dart';
 import '../commute_screens/commute_ride_detail_screen.dart';
 import 'group_chat_page.dart';
+import '../widgets/section_card.dart';
 
 // Ekrani za navigaciju prema kategorijama
 import '../local/screens/local_home_screen.dart'; // Postovi – očekuje username i locationAdmin
@@ -396,52 +397,48 @@ class _NewsPortalViewState extends State<NewsPortalView> {
   }
 
   Widget _buildMarketplaceSection(LocalizationService loc) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Column(
-        children: [
-          _buildModernSectionHeader(
-              Icons.store, loc.translate('marketplace') ?? "Tržnica", () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => MarketplaceScreen(
-                  username: widget.username,
-                  countryId: widget.countryId,
-                  cityId: widget.cityId,
-                  locationId: widget.locationId,
-                ),
+    return SectionCard(
+      icon: Icons.store,
+      title: loc.translate('marketplace') ?? 'Tržnica',
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => MarketplaceScreen(
+              username: widget.username,
+              countryId: widget.countryId,
+              cityId: widget.cityId,
+              locationId: widget.locationId,
+            ),
+          ),
+        );
+      },
+      child: FutureBuilder<List<Map<String, dynamic>>>(
+        future: _fetchLastMarketplaceAds(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: SizedBox(height: 100, child: CircularProgressIndicator()),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                loc.translate('error_loading_marketplace_ads') ??
+                    'Error loading marketplace ads.',
               ),
             );
-          }),
-          FutureBuilder<List<Map<String, dynamic>>>(
-            future: _fetchLastMarketplaceAds(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                    child: SizedBox(
-                        height: 100, child: CircularProgressIndicator()));
-              } else if (snapshot.hasError) {
-                return Center(
-                    child: Text(
-                        loc.translate('error_loading_marketplace_ads') ??
-                            "Error loading marketplace ads."));
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return Center(
-                    child: Text(loc.translate('no_ads_available') ??
-                        "No ads available."));
-              }
-              final adsData = snapshot.data!;
-              return Column(
-                children: adsData
-                    .map((ad) => _buildMarketplaceCard(ad, loc))
-                    .toList(),
-              );
-            },
-          ),
-        ],
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(
+              child:
+                  Text(loc.translate('no_ads_available') ?? 'No ads available.'),
+            );
+          }
+          final adsData = snapshot.data!;
+          return Column(
+            children:
+                adsData.map((ad) => _buildMarketplaceCard(ad, loc)).toList(),
+          );
+        },
       ),
     );
   }
@@ -544,29 +541,25 @@ class _NewsPortalViewState extends State<NewsPortalView> {
   }
 
   Widget _buildChatRoomSection(LocalizationService loc) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Column(
-        children: [
-          _buildModernSectionHeader(Icons.chat, loc.translate('chat') ?? "Chat",
-              () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => GroupChatPage(
-                  countryId: widget.countryId,
-                  cityId: widget.cityId,
-                  locationId: widget.locationId,
-                ),
-              ),
-            );
-          }),
-          FutureBuilder<QuerySnapshot>(
-            future: _firestore
-                .collection('countries')
-                .doc(_geoCountry.isNotEmpty ? _geoCountry : widget.countryId)
+    return SectionCard(
+      icon: Icons.chat,
+      title: loc.translate('chat') ?? 'Chat',
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => GroupChatPage(
+              countryId: widget.countryId,
+              cityId: widget.cityId,
+              locationId: widget.locationId,
+            ),
+          ),
+        );
+      },
+      child: FutureBuilder<QuerySnapshot>(
+        future: _firestore
+            .collection('countries')
+            .doc(_geoCountry.isNotEmpty ? _geoCountry : widget.countryId)
                 .collection('cities')
                 .doc(_geoCity.isNotEmpty ? _geoCity : widget.cityId)
                 .collection('locations')
@@ -609,8 +602,6 @@ class _NewsPortalViewState extends State<NewsPortalView> {
               );
             },
           ),
-        ],
-      ),
     );
   }
 
@@ -688,27 +679,23 @@ class _NewsPortalViewState extends State<NewsPortalView> {
     final DateTime today = DateTime.now();
     final String todayId =
         "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Column(
-        children: [
-          _buildModernSectionHeader(Icons.quiz, loc.translate('quiz') ?? "Kviz",
-              () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => GamesScreen(
-                  username: widget.username,
-                  countryId: widget.countryId,
-                  cityId: widget.cityId,
-                  locationId: widget.locationId,
-                ),
-              ),
-            );
-          }),
-          FutureBuilder<QuerySnapshot>(
+    return SectionCard(
+      icon: Icons.quiz,
+      title: loc.translate('quiz') ?? 'Kviz',
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => GamesScreen(
+              username: widget.username,
+              countryId: widget.countryId,
+              cityId: widget.cityId,
+              locationId: widget.locationId,
+            ),
+          ),
+        );
+      },
+      child: FutureBuilder<QuerySnapshot>(
             future: _firestore
                 .collection('countries')
                 .doc(_geoCountry.isNotEmpty ? _geoCountry : widget.countryId)
@@ -777,33 +764,27 @@ class _NewsPortalViewState extends State<NewsPortalView> {
               );
             },
           ),
-        ],
-      ),
     );
   }
 
   Widget _buildBulletinBoardSection(LocalizationService loc) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Column(
-        children: [
-          _buildModernSectionHeader(Icons.announcement,
-              loc.translate('bulletin_board') ?? 'Bulletin Board', () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => BulletinBoardScreen(
-                  username: widget.username,
-                  countryId: widget.countryId,
-                  cityId: widget.cityId,
-                  locationId: widget.locationId,
-                ),
-              ),
-            );
-          }),
-          FutureBuilder<QuerySnapshot>(
+    return SectionCard(
+      icon: Icons.announcement,
+      title: loc.translate('bulletin_board') ?? 'Bulletin Board',
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => BulletinBoardScreen(
+              username: widget.username,
+              countryId: widget.countryId,
+              cityId: widget.cityId,
+              locationId: widget.locationId,
+            ),
+          ),
+        );
+      },
+      child: FutureBuilder<QuerySnapshot>(
             future: _firestore
                 .collection('countries')
                 .doc(_geoCountry.isNotEmpty ? _geoCountry : widget.countryId)
@@ -895,34 +876,29 @@ class _NewsPortalViewState extends State<NewsPortalView> {
               );
             },
           ),
-        ],
-      ),
     );
   }
 
   Widget _buildDocumentsSection(LocalizationService loc) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      color: Colors.orange[50],
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Column(
-        children: [
-          _buildModernSectionHeader(
-              Icons.description, loc.translate('documents') ?? 'Documents', () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => DocumentsScreen(
-                  username: widget.username,
-                  countryId: widget.countryId,
-                  cityId: widget.cityId,
-                  locationId: widget.locationId,
-                ),
-              ),
-            );
-          }, headerColor: Colors.grey),
-          FutureBuilder<QuerySnapshot>(
+    return SectionCard(
+      icon: Icons.description,
+      title: loc.translate('documents') ?? 'Documents',
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => DocumentsScreen(
+              username: widget.username,
+              countryId: widget.countryId,
+              cityId: widget.cityId,
+              locationId: widget.locationId,
+            ),
+          ),
+        );
+      },
+      headerColor: Colors.grey,
+      cardColor: Colors.orange[50],
+      child: FutureBuilder<QuerySnapshot>(
             future: _firestore
                 .collection('countries')
                 .doc(_geoCountry.isNotEmpty ? _geoCountry : widget.countryId)
@@ -997,33 +973,27 @@ class _NewsPortalViewState extends State<NewsPortalView> {
               );
             },
           ),
-        ],
-      ),
     );
   }
 
   Widget _buildBukaSection(LocalizationService loc) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Column(
-        children: [
-          _buildModernSectionHeader(
-              Icons.construction, loc.translate('noise') ?? "Buka", () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => ConstructionScreen(
-                  username: widget.username,
-                  countryId: widget.countryId,
-                  cityId: widget.cityId,
-                  locationId: widget.locationId,
-                ),
-              ),
-            );
-          }),
-          _works.isEmpty
+    return SectionCard(
+      icon: Icons.construction,
+      title: loc.translate('noise') ?? 'Buka',
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ConstructionScreen(
+              username: widget.username,
+              countryId: widget.countryId,
+              cityId: widget.cityId,
+              locationId: widget.locationId,
+            ),
+          ),
+        );
+      },
+      child: _works.isEmpty
               ? Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(loc.translate('no_active_works') ??
@@ -1067,8 +1037,6 @@ class _NewsPortalViewState extends State<NewsPortalView> {
                     );
                   },
                 ),
-        ],
-      ),
     );
   }
 
@@ -1094,33 +1062,29 @@ class _NewsPortalViewState extends State<NewsPortalView> {
   }
 
   Widget _buildParkingSection(LocalizationService loc) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Column(
-        children: [
-          _buildModernSectionHeader(
-              Icons.local_parking, loc.translate('parking') ?? "Parking", () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => ParkingCommunityScreen(
-                  username: widget.username,
-                  countryId: widget.countryId,
-                  cityId: widget.cityId,
-                  locationId: widget.locationId,
-                  locationAdmin: widget.locationAdmin,
-                ),
-              ),
-            );
-          }),
-          Container(
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+    return SectionCard(
+      icon: Icons.local_parking,
+      title: loc.translate('parking') ?? 'Parking',
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ParkingCommunityScreen(
+              username: widget.username,
+              countryId: widget.countryId,
+              cityId: widget.cityId,
+              locationId: widget.locationId,
+              locationAdmin: widget.locationAdmin,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
             ),
             child: _parkingPreview.isEmpty
                 ? Text(loc.translate('no_active_parking_requests') ??
@@ -1147,8 +1111,6 @@ class _NewsPortalViewState extends State<NewsPortalView> {
                     }).toList(),
                   ),
           ),
-        ],
-      ),
     );
   }
 
@@ -1229,27 +1191,23 @@ class _NewsPortalViewState extends State<NewsPortalView> {
   }
 
   Widget _buildCommuteSection(LocalizationService loc) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Column(
-        children: [
-          _buildModernSectionHeader(Icons.directions_car,
-              loc.translate('commute') ?? "Zajednički prijevoz", () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => CommuteRidesListScreen(
-                  username: widget.username,
-                  countryId: widget.countryId,
-                  cityId: widget.cityId,
-                  locationId: widget.locationId,
-                ),
-              ),
-            );
-          }),
-          _commutePreview.isEmpty
+    return SectionCard(
+      icon: Icons.directions_car,
+      title: loc.translate('commute') ?? 'Zajednički prijevoz',
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CommuteRidesListScreen(
+              username: widget.username,
+              countryId: widget.countryId,
+              cityId: widget.cityId,
+              locationId: widget.locationId,
+            ),
+          ),
+        );
+      },
+      child: _commutePreview.isEmpty
               ? Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -1274,8 +1232,6 @@ class _NewsPortalViewState extends State<NewsPortalView> {
                           ))
                       .toList(),
                 ),
-        ],
-      ),
     );
   }
 
@@ -1537,32 +1493,24 @@ class _NewsPortalViewState extends State<NewsPortalView> {
                 ),
                 const SizedBox(height: 16),
                 // Mudra sova – bez navigacije
-                Card(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  elevation: 3,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Column(
-                    children: [
-                      _buildModernSectionHeader(Icons.book,
-                          loc.translate('wise_owl') ?? "Mudra sova", () {}),
-                      Container(
-                        margin: const EdgeInsets.all(16),
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: _dailySaying == null
-                            ? const Center(child: CircularProgressIndicator())
-                            : Text(
-                                _dailySaying!,
-                                style: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
-                              ),
-                      ),
-                    ],
+                SectionCard(
+                  icon: Icons.book,
+                  title: loc.translate('wise_owl') ?? 'Mudra sova',
+                  onTap: () {},
+                  child: Container(
+                    margin: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: _dailySaying == null
+                        ? const Center(child: CircularProgressIndicator())
+                        : Text(
+                            _dailySaying!,
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500),
+                          ),
                   ),
                 ),
                 const SizedBox(height: 16),
