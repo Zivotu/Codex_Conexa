@@ -74,11 +74,9 @@ class QuizSection extends StatelessWidget {
                 .get(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: CircularProgressIndicator(),
-                  ),
+                return Column(
+                  children:
+                      List.generate(3, (_) => buildQuizResultSkeleton()),
                 );
               } else if (snapshot.hasError) {
                 return Center(
