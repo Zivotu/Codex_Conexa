@@ -113,10 +113,11 @@ class PostService {
       // Determine the year and month based on the provided [fromDate]
       // so that the correct monthly collection can be queried. If no
       // starting date is supplied, default to the current date.
-      DateTime createdAt = fromDate ?? DateTime.now();
 
-      final String year = createdAt.year.toString();
-      final String month = createdAt.month.toString().padLeft(2, '0');
+      DateTime referenceDate = fromDate ?? DateTime.now();
+
+      final String year = referenceDate.year.toString();
+      final String month = referenceDate.month.toString().padLeft(2, '0');
 
       if (isUnknownLocation) {
         postCollection = _firestore
