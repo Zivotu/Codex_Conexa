@@ -790,7 +790,6 @@ class LocalHomeScreenState extends State<LocalHomeScreen>
             locationId: location['locationId'] ?? '',
             username: widget.username,
             displayName: location['locationName'] ?? '',
-            isFunnyMode: false,
             locationAdmin: location['locationAdmin'] ?? false,
           ),
         ),

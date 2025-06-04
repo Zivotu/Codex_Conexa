@@ -24,10 +24,6 @@ class BottomNavigationWidget extends StatelessWidget {
           icon: Icon(Icons.view_carousel),
           label: 'Classic Mode',
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.sentiment_very_satisfied),
-          label: 'Funny Mode',
-        ),
       ],
     );
   }

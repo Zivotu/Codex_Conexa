@@ -50,7 +50,6 @@ Route<dynamic>? generateRoute(RouteSettings settings) {
                 locationId: args?['locationId'] ?? '',
                 username: args?['username'] ?? '',
                 displayName: args?['displayName'] ?? 'Unnamed Location',
-                isFunnyMode: args?['isFunnyMode'] ?? false,
                 locationAdmin: args?['locationAdmin'] ?? false,
               ));
     case '/construction':

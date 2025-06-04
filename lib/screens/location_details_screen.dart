@@ -17,7 +17,6 @@ import '../services/location_service.dart';
 import '../local/services/post_service.dart';
 import 'location_settings_screen.dart';
 import 'classic_mode.dart' as classic;
-import 'funny_mode.dart'; // Ako koristite FunnyMode, inače NewsPortalView.
 import '../local/screens/local_home_screen.dart';
 import 'user_locations_screen.dart';
 import 'join_location_screen.dart';
@@ -102,8 +101,6 @@ class LocationDetailsScreen extends StatefulWidget {
   final String locationId;
   final String username;
   final String displayName;
-  final bool
-      isFunnyMode; // Ako je true, koristi se FunnyMode, inače NewsPortalView.
   final bool locationAdmin;
 
   const LocationDetailsScreen({
@@ -113,7 +110,6 @@ class LocationDetailsScreen extends StatefulWidget {
     required this.locationId,
     required this.username,
     required this.displayName,
-    required this.isFunnyMode,
     required this.locationAdmin,
   });
 
@@ -135,7 +131,7 @@ class LocationDetailsScreenState extends State<LocationDetailsScreen> {
   bool _isServicer = false;
   bool _isAffiliatePartner = false;
 
-  // PageController – učitava zadnji aktivan mod (0 = Classic, 1 = News/Funny)
+  // PageController – učitava zadnji aktivan mod (0 = Classic, 1 = News)
   late PageController _pageController;
   int _currentPage = 0;
   bool _newsRevealed = false;
@@ -1019,24 +1015,17 @@ class LocationDetailsScreenState extends State<LocationDetailsScreen> {
               locationAdmin: widget.locationAdmin,
             ),
           ),
-          // News/Funny mod – s reveal animacijom koja se pokrene samo prvi put
+          // News mod – s reveal animacijom koja se pokrene samo prvi put
           KeepAliveWrapper(
             child: Stack(
               children: [
-                widget.isFunnyMode
-                    ? FunnyMode(
-                        countryId: widget.countryId,
-                        cityId: widget.cityId,
-                        locationId: widget.locationId,
-                        username: _username,
-                      )
-                    : NewsPortalView(
-                        countryId: widget.countryId,
-                        cityId: widget.cityId,
-                        locationId: widget.locationId,
-                        username: _username,
-                        locationAdmin: widget.locationAdmin,
-                      ),
+                NewsPortalView(
+                  countryId: widget.countryId,
+                  cityId: widget.cityId,
+                  locationId: widget.locationId,
+                  username: _username,
+                  locationAdmin: widget.locationAdmin,
+                ),
                 if (!_newsRevealed)
                   SplitRevealOverlay(
                     onAnimationComplete: () {

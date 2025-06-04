@@ -187,7 +187,6 @@ class QRScannerScreenState extends State<QRScannerScreen> {
                     locationId: locationId,
                     username: widget.username,
                     displayName: locationName,
-                    isFunnyMode: false,
                     locationAdmin: false,
                   ),
                 ),

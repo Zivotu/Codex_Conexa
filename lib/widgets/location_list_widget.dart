@@ -79,7 +79,6 @@ class LocationListWidget extends StatelessWidget {
           locationId: location['locationId'] ?? '',
           username: username,
           displayName: location['name'] ?? 'Unnamed Location',
-          isFunnyMode: false,
           locationAdmin: false,
         ),
       ),

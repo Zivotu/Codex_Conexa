@@ -20,6 +20,7 @@ import 'readings_screen.dart';
 import '../commute_screens/commute_rides_list_screen.dart';
 import 'snow_cleaning_screen.dart';
 import 'admin_vox_populi_screen.dart';
+import 'dart:math';
 
 /// Pomoćna metoda za dobivanje status detalja iz RepairRequest podataka.
 Map<String, dynamic> getRepairStatusDetails(
@@ -124,7 +125,6 @@ class ClassicModeState extends State<ClassicMode>
   String? locationName;
   String? displayName;
   List<Map<String, dynamic>> randomAds = [];
-  bool isFunnyMode = false;
 
   late final Future<List<String>> _randomAdTitlesFuture;
   late final Future<String> _wiseOwlSubtitleFuture;
@@ -1306,16 +1306,16 @@ class ClassicModeState extends State<ClassicMode>
       );
     }
 
-    // Oglasne kartice.
-    List<Widget> adCards = [];
+    // Oglasne kartice umetnute na nasumične pozicije.
+    List<Widget> combinedCards = List<Widget>.from(baseCards);
     if (randomAds.isNotEmpty) {
       for (var ad in randomAds) {
-        adCards.add(_buildAdCard(ad));
+        int insertIndex = Random().nextInt(combinedCards.length + 1);
+        combinedCards.insert(insertIndex, _buildAdCard(ad));
       }
     }
 
-    // Kombinirano.
-    return List<Widget>.from(baseCards)..addAll(adCards);
+    return combinedCards;
   }
 
   Widget _buildCategoryCard(
