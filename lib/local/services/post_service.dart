@@ -38,7 +38,7 @@ class PostService {
         postData['localLocationId'] = LocationConstants.UNKNOWN_LOCATION;
       }
 
-      DateTime createdAt = fromDate ?? DateTime.now();
+      DateTime createdAt = DateTime.now();
 
       final String year = createdAt.year.toString();
       final String month = createdAt.month.toString().padLeft(2, '0');
