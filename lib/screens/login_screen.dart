@@ -280,22 +280,43 @@ class LoginScreenState extends State<LoginScreen> {
       resizeToAvoidBottomInset: false,
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
-        child: SafeArea(
-          child: Stack(
-            children: [
-              // Pozadinska slika
-              Positioned.fill(
-                child: Image.asset(
-                  'assets/images/conexa_bg_1.png',
-                  fit: BoxFit.cover,
+        child: Stack(
+          children: [
+            // Pozadinska slika
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/conexa_bg_1.png',
+                fit: BoxFit.cover,
+              ),
+            ),
+            // Plavi gradient preko slike radi čitljivosti
+            Positioned.fill(
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Color(0xFFB3E5FC),
+                      Color(0xFF0288D1),
+                    ],
+                  ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // Društveni linkovi na bijelo transparentnoj pozadini
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: SafeArea(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Društveni linkovi na bijelo transparentnoj pozadini
                     Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       decoration: BoxDecoration(
