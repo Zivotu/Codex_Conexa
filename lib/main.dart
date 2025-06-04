@@ -487,7 +487,6 @@ class MainScreen extends StatefulWidget {
   final String username;
   final String displayName;
   final bool locationAdmin;
-  final bool isFunnyMode;
   final String? countryId;
   final String? cityId;
   final String? locationId;
@@ -498,7 +497,6 @@ class MainScreen extends StatefulWidget {
     required this.username,
     required this.displayName,
     required this.locationAdmin,
-    required this.isFunnyMode,
     this.countryId,
     this.cityId,
     this.locationId,

@@ -500,7 +500,6 @@ class UserLocationsScreenState extends State<UserLocationsScreen>
             locationId: location['locationId'] ?? '',
             username: widget.username,
             displayName: location['locationName'] ?? '',
-            isFunnyMode: false,
             locationAdmin: location['locationAdmin'] ?? false,
           ),
         ),

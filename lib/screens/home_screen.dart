@@ -28,7 +28,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-  bool isFunnyMode = false;
   bool _isLoading = false;
   final User? currentUser = FirebaseAuth.instance.currentUser;
   List<Map<String, dynamic>> _locations = [];
@@ -49,8 +48,10 @@ class HomeScreenState extends State<HomeScreen> {
 
   Future<void> _initializeData() async {
     setState(() => _isLoading = true);
-    await Future.wait(
-        [_fetchUsername(), _fetchLastUsedMode(), _fetchUserLocations()]);
+    await Future.wait([
+      _fetchUsername(),
+      _fetchUserLocations(),
+    ]);
     if (mounted) {
       setState(() => _isLoading = false);
     }
@@ -129,13 +130,6 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> _fetchLastUsedMode() async {
-    if (currentUser == null) return;
-    final data = await userService.getUserDocument(currentUser!);
-    if (mounted && data != null) {
-      setState(() => isFunnyMode = data['lastUsedMode'] == 'funny');
-    }
-  }
 
   Future<void> _logEvent(String type, {String? locationId}) async {
     if (currentUser == null) return;
@@ -337,7 +331,6 @@ class HomeScreenState extends State<HomeScreen> {
         'locationId': locationId,
         'username': _username,
         'displayName': displayName,
-        'isFunnyMode': isFunnyMode,
       },
     ).then((_) => _fetchUserLocations());
   }
