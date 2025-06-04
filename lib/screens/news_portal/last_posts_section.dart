@@ -47,9 +47,9 @@ class LastPostsSection extends StatelessWidget {
             future: fetchPosts(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const SizedBox(
+                return SizedBox(
                   height: 200,
-                  child: Center(child: CircularProgressIndicator()),
+                  child: buildPostsGridSkeleton(),
                 );
               } else if (snapshot.hasError) {
                 return SizedBox(

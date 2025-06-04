@@ -53,8 +53,9 @@ class MarketplaceSection extends StatelessWidget {
             future: fetchAds(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: SizedBox(height: 100, child: CircularProgressIndicator()),
+                return Column(
+                  children:
+                      List.generate(2, (_) => buildMarketplaceAdSkeleton()),
                 );
               } else if (snapshot.hasError) {
                 return Center(

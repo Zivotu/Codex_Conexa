@@ -73,11 +73,9 @@ class OfficialNoticesSection extends StatelessWidget {
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: CircularProgressIndicator(),
-                  ),
+                return Column(
+                  children:
+                      List.generate(2, (_) => buildBlogPostSkeleton()),
                 );
               }
               if (snapshot.hasError) {
