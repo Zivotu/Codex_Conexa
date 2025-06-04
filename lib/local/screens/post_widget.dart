@@ -88,8 +88,12 @@ class PostWidgetState extends State<PostWidget> {
       final city = widget.postData['localCityId'];
       final neighborhood = widget.postData['localNeighborhoodId'];
 
+      final DateTime createdAt = (widget.postData['createdAt'] as Timestamp).toDate();
+      final String year = createdAt.year.toString();
+      final String month = createdAt.month.toString().padLeft(2, '0');
+
       final metricsPath =
-          'local_community/$country/cities/$city/neighborhoods/$neighborhood/metrics_${DateTime.now().year}_${DateTime.now().month.toString().padLeft(2, '0')}/$postId';
+          'local_community/$country/cities/$city/neighborhoods/$neighborhood/metrics_${year}_${month}/$postId';
 
       DocumentSnapshot metricsSnapshot =
           await FirebaseFirestore.instance.doc(metricsPath).get();
@@ -176,11 +180,15 @@ class PostWidgetState extends State<PostWidget> {
 
       WriteBatch batch = FirebaseFirestore.instance.batch();
 
+      final DateTime createdAt = (widget.postData['createdAt'] as Timestamp).toDate();
+      final String year = createdAt.year.toString();
+      final String month = createdAt.month.toString().padLeft(2, '0');
+
       final metricsPath =
-          'local_community/$country/cities/$city/neighborhoods/$neighborhood/metrics_${DateTime.now().year}_${DateTime.now().month.toString().padLeft(2, '0')}/$postId';
+          'local_community/$country/cities/$city/neighborhoods/$neighborhood/metrics_${year}_${month}/$postId';
 
       final postPath =
-          'local_community/$country/cities/$city/neighborhoods/$neighborhood/posts_${DateTime.now().year}_${DateTime.now().month.toString().padLeft(2, '0')}/$postId';
+          'local_community/$country/cities/$city/neighborhoods/$neighborhood/posts_${year}_${month}/$postId';
 
       final communityMetricsRef = FirebaseFirestore.instance.doc(metricsPath);
       final postRef = FirebaseFirestore.instance.doc(postPath);
@@ -258,11 +266,15 @@ class PostWidgetState extends State<PostWidget> {
 
       WriteBatch batch = FirebaseFirestore.instance.batch();
 
+      final DateTime createdAt = (widget.postData['createdAt'] as Timestamp).toDate();
+      final String year = createdAt.year.toString();
+      final String month = createdAt.month.toString().padLeft(2, '0');
+
       final metricsPath =
-          'local_community/$country/cities/$city/neighborhoods/$neighborhood/metrics_${DateTime.now().year}_${DateTime.now().month.toString().padLeft(2, '0')}/$postId';
+          'local_community/$country/cities/$city/neighborhoods/$neighborhood/metrics_${year}_${month}/$postId';
 
       final postPath =
-          'local_community/$country/cities/$city/neighborhoods/$neighborhood/posts_${DateTime.now().year}_${DateTime.now().month.toString().padLeft(2, '0')}/$postId';
+          'local_community/$country/cities/$city/neighborhoods/$neighborhood/posts_${year}_${month}/$postId';
 
       final communityMetricsRef = FirebaseFirestore.instance.doc(metricsPath);
       final postRef = FirebaseFirestore.instance.doc(postPath);

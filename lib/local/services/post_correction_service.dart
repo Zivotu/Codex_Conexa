@@ -146,22 +146,35 @@ class PostCorrectionService {
       postData['localNeighborhoodId'] = neighborhood;
       postData['corrected'] = true; // oznaka da je post ispravljen
 
+      // Dohvati godinu i mjesec na temelju vremena kreiranja posta
+      DateTime createdAt;
+      if (postData['createdAt'] is Timestamp) {
+        createdAt = (postData['createdAt'] as Timestamp).toDate();
+      } else if (postData['createdAt'] is DateTime) {
+        createdAt = postData['createdAt'] as DateTime;
+      } else {
+        createdAt = DateTime.now();
+      }
+
+      final String year = createdAt.year.toString();
+      final String month = createdAt.month.toString().padLeft(2, '0');
+
       String newCollectionPath;
       if (postData.containsKey('localLocationId') &&
           postData['localLocationId'] == LocationConstants.UNKNOWN) {
         // Putanja za "Unknown" lokacije
         newCollectionPath =
-            'local_community/${LocationConstants.UNKNOWN}/posts_${DateTime.now().year}_${DateTime.now().month.toString().padLeft(2, '0')}';
+            'local_community/${LocationConstants.UNKNOWN}/posts_${year}_$month';
       } else if (country == LocationConstants.UNKNOWN_COUNTRY &&
           city == LocationConstants.UNKNOWN_CITY &&
           neighborhood == LocationConstants.UNKNOWN_NEIGHBORHOOD) {
         // Putanja za opću nepoznatu lokaciju
         newCollectionPath =
-            'local_community/${LocationConstants.UNKNOWN_LOCATION}/posts_${DateTime.now().year}_${DateTime.now().month.toString().padLeft(2, '0')}';
+            'local_community/${LocationConstants.UNKNOWN_LOCATION}/posts_${year}_$month';
       } else {
         // Putanja za specifičnu lokaciju
         newCollectionPath =
-            'local_community/$country/cities/$city/neighborhoods/$neighborhood/posts_${DateTime.now().year}_${DateTime.now().month.toString().padLeft(2, '0')}';
+            'local_community/$country/cities/$city/neighborhoods/$neighborhood/posts_${year}_$month';
       }
 
       // Koristimo batch ili transakciju radi konzistentnosti
