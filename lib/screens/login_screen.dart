@@ -413,7 +413,7 @@ class LoginScreenState extends State<LoginScreen> {
                             )
                           : Text(localizationService.translate('login')),
                     ),
-                    const Spacer(),
+
 
                     // Register button
                     ElevatedButton(
@@ -504,11 +504,13 @@ class LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
               ),
-            ],
+            ),
           ),
         ),
+        ],
       ),
-    );
+    ),
+  );
   }
 }
 
