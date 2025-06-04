@@ -312,14 +312,11 @@ Future<void> main() async {
     _logger.e('Firebase initialization failed: $e');
   }
 
+  setupServiceLocator();
+
   await Purchases.setDebugLogsEnabled(true);
   await Purchases.configure(
       PurchasesConfiguration("goog_aIQgWOvJPtXYYkjnlXtcjFbZzwI"));
-
-  await cleanOldCacheFiles();
-  await requestNotificationPermissions();
-  await requestStoragePermissions();
-  setupServiceLocator();
 
   try {
     await FirebaseAppCheck.instance.activate(
@@ -331,19 +328,21 @@ Future<void> main() async {
     _logger.e('Firebase App Check activation failed: $e');
   }
 
-  await _initializeLocalNotifications();
-
   final localizationService = LocalizationService();
-  try {
-    await localizationService.init();
-    _logger.d('LocalizationService initialized.');
-  } catch (e) {
-    _logger.e('LocalizationService initialization failed: $e');
-  }
 
-  await _initDynamicLinks();
-  await GetIt.I<FCMService>().init();
-  await _registerAppLaunch();
+  await Future.wait([
+    requestNotificationPermissions(),
+    requestStoragePermissions(),
+    _initializeLocalNotifications(),
+    localizationService.init(),
+    GetIt.I<FCMService>().init(),
+  ]);
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    unawaited(cleanOldCacheFiles());
+    unawaited(_initDynamicLinks());
+    unawaited(_registerAppLaunch());
+  });
 
   // Odabir početnog ekrana
   SharedPreferences prefs = await SharedPreferences.getInstance();
