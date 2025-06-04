@@ -144,12 +144,14 @@ class NeighborhoodPostsScreenState extends State<NeighborhoodPostsScreen> {
   /* ------------------------------------------------------------------ */
 
   void _navigateToPostDetail(BuildContext context, Map<String, dynamic> post) {
+    final DateTime createdAt = (post['createdAt'] as Timestamp).toDate();
     _postService.updatePostViews(
       post['postId'],
       post['userId'],
       widget.countryId,
       widget.cityId,
       widget.neighborhood,
+      createdAt,
     );
     Navigator.push(
       context,
