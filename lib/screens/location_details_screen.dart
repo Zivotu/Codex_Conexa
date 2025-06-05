@@ -994,10 +994,11 @@ class LocationDetailsScreenState extends State<LocationDetailsScreen> {
           ],
         ),
       ),
-      // PageView – koristi ClampingScrollPhysics i sprema zadnji aktivan mod.
+      // PageView – koristi BouncingScrollPhysics i sprema zadnji aktivan mod.
       body: PageView(
         controller: _pageController,
-        physics: const ClampingScrollPhysics(),
+        allowImplicitScrolling: true,
+        physics: const BouncingScrollPhysics(),
         onPageChanged: (int page) {
           setState(() {
             _currentPage = page;
