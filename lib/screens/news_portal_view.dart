@@ -26,6 +26,7 @@ import '../services/parking_schedule_service.dart';
 
 // Detaljni ekrani
 import '../local/screens/post_detail_screen.dart';
+import '../viewmodels/ride_view_model.dart';
 import 'blog_details_screen.dart';
 import 'ad_detail_screen.dart';
 import 'full_screen_bulletin.dart';
@@ -137,7 +138,6 @@ class _NewsPortalViewState extends State<NewsPortalView> {
 
   // Commute preview (vožnje)
   List<Ride> _commutePreview = [];
-
 
   // Dodan ScrollController za RefreshIndicator
   final ScrollController _scrollController = ScrollController();
@@ -427,8 +427,8 @@ class _NewsPortalViewState extends State<NewsPortalView> {
             );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(
-              child:
-                  Text(loc.translate('no_ads_available') ?? 'No ads available.'),
+              child: Text(
+                  loc.translate('no_ads_available') ?? 'No ads available.'),
             );
           }
           final adsData = snapshot.data!;
@@ -558,48 +558,47 @@ class _NewsPortalViewState extends State<NewsPortalView> {
         future: _firestore
             .collection('countries')
             .doc(_geoCountry.isNotEmpty ? _geoCountry : widget.countryId)
-                .collection('cities')
-                .doc(_geoCity.isNotEmpty ? _geoCity : widget.cityId)
-                .collection('locations')
-                .doc(_geoNeighborhood.isNotEmpty
-                    ? _geoNeighborhood
-                    : widget.locationId)
-                .collection('chats')
-                .orderBy('createdAt', descending: true)
-                .limit(5)
-                .get(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                    child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: CircularProgressIndicator()));
-              } else if (snapshot.hasError) {
-                return Center(
-                    child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text(loc.translate('error_loading_chats') ??
-                            "Error loading chats.")));
-              } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return Center(
-                    child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text(
-                            loc.translate('no_chat_messages_available') ??
-                                "No chat messages available.")));
-              }
-              final docs = snapshot.data!.docs;
-              final List<ChatModel> lastMessages = docs
-                  .map((doc) =>
-                      ChatModel.fromJson(doc.data() as Map<String, dynamic>))
-                  .toList();
-              return Column(
-                children: lastMessages
-                    .map((chat) => _buildSingleChatMessage(chat, loc))
-                    .toList(),
-              );
-            },
-          ),
+            .collection('cities')
+            .doc(_geoCity.isNotEmpty ? _geoCity : widget.cityId)
+            .collection('locations')
+            .doc(_geoNeighborhood.isNotEmpty
+                ? _geoNeighborhood
+                : widget.locationId)
+            .collection('chats')
+            .orderBy('createdAt', descending: true)
+            .limit(5)
+            .get(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+                child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: CircularProgressIndicator()));
+          } else if (snapshot.hasError) {
+            return Center(
+                child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(loc.translate('error_loading_chats') ??
+                        "Error loading chats.")));
+          } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(
+                child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(loc.translate('no_chat_messages_available') ??
+                        "No chat messages available.")));
+          }
+          final docs = snapshot.data!.docs;
+          final List<ChatModel> lastMessages = docs
+              .map((doc) =>
+                  ChatModel.fromJson(doc.data() as Map<String, dynamic>))
+              .toList();
+          return Column(
+            children: lastMessages
+                .map((chat) => _buildSingleChatMessage(chat, loc))
+                .toList(),
+          );
+        },
+      ),
     );
   }
 
@@ -694,74 +693,70 @@ class _NewsPortalViewState extends State<NewsPortalView> {
         );
       },
       child: FutureBuilder<QuerySnapshot>(
-            future: _firestore
-                .collection('countries')
-                .doc(_geoCountry.isNotEmpty ? _geoCountry : widget.countryId)
-                .collection('cities')
-                .doc(_geoCity.isNotEmpty ? _geoCity : widget.cityId)
-                .collection('locations')
-                .doc(_geoNeighborhood.isNotEmpty
-                    ? _geoNeighborhood
-                    : widget.locationId)
-                .collection('quizz')
-                .doc(todayId)
-                .collection('results')
-                .orderBy('score', descending: true)
-                .limit(10)
-                .get(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                    child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: CircularProgressIndicator()));
-              } else if (snapshot.hasError) {
-                return Center(
-                    child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text(
-                            loc.translate('error_loading_quiz_results') ??
-                                "Error loading quiz results")));
-              } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return Center(
-                    child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text(
-                            loc.translate('no_quiz_results_available') ??
-                                "No quiz results available")));
-              }
-              final docs = snapshot.data!.docs;
-              return Column(
-                children: docs.map((doc) {
-                  final data = doc.data() as Map<String, dynamic>;
-                  final String userId = data['user_id'] ?? '';
-                  final String userName = data['username'] ?? 'Unknown';
-                  final int score = data['score'] as int? ?? 0;
-                  return Card(
-                    margin:
-                        const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
-                    child: ListTile(
-                      leading: ProfileAvatar(userId: userId, radius: 25),
-                      title: Text(
-                        userName,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      subtitle: Text(
-                        "${loc.translate('score') ?? 'Score'}: $score",
-                        style:
-                            const TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
-                    ),
-                  );
-                }).toList(),
+        future: _firestore
+            .collection('countries')
+            .doc(_geoCountry.isNotEmpty ? _geoCountry : widget.countryId)
+            .collection('cities')
+            .doc(_geoCity.isNotEmpty ? _geoCity : widget.cityId)
+            .collection('locations')
+            .doc(_geoNeighborhood.isNotEmpty
+                ? _geoNeighborhood
+                : widget.locationId)
+            .collection('quizz')
+            .doc(todayId)
+            .collection('results')
+            .orderBy('score', descending: true)
+            .limit(10)
+            .get(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+                child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: CircularProgressIndicator()));
+          } else if (snapshot.hasError) {
+            return Center(
+                child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(loc.translate('error_loading_quiz_results') ??
+                        "Error loading quiz results")));
+          } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(
+                child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(loc.translate('no_quiz_results_available') ??
+                        "No quiz results available")));
+          }
+          final docs = snapshot.data!.docs;
+          return Column(
+            children: docs.map((doc) {
+              final data = doc.data() as Map<String, dynamic>;
+              final String userId = data['user_id'] ?? '';
+              final String userName = data['username'] ?? 'Unknown';
+              final int score = data['score'] as int? ?? 0;
+              return Card(
+                margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)),
+                child: ListTile(
+                  leading: ProfileAvatar(userId: userId, radius: 25),
+                  title: Text(
+                    userName,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: Text(
+                    "${loc.translate('score') ?? 'Score'}: $score",
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                ),
               );
-            },
-          ),
+            }).toList(),
+          );
+        },
+      ),
     );
   }
 
@@ -783,97 +778,96 @@ class _NewsPortalViewState extends State<NewsPortalView> {
         );
       },
       child: FutureBuilder<QuerySnapshot>(
-            future: _firestore
-                .collection('countries')
-                .doc(_geoCountry.isNotEmpty ? _geoCountry : widget.countryId)
-                .collection('cities')
-                .doc(_geoCity.isNotEmpty ? _geoCity : widget.cityId)
-                .collection('locations')
-                .doc(_geoNeighborhood.isNotEmpty
-                    ? _geoNeighborhood
-                    : widget.locationId)
-                .collection('bulletin_board')
-                .orderBy('createdAt', descending: true)
-                .limit(2)
-                .get(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                    child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: CircularProgressIndicator()));
-              } else if (snapshot.hasError) {
-                return Center(
-                    child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text(loc.translate('error_loading_data') ??
-                            "Error loading data.")));
-              } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return Center(
-                    child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text(loc.translate('no_data_available') ??
-                            "No data available.")));
+        future: _firestore
+            .collection('countries')
+            .doc(_geoCountry.isNotEmpty ? _geoCountry : widget.countryId)
+            .collection('cities')
+            .doc(_geoCity.isNotEmpty ? _geoCity : widget.cityId)
+            .collection('locations')
+            .doc(_geoNeighborhood.isNotEmpty
+                ? _geoNeighborhood
+                : widget.locationId)
+            .collection('bulletin_board')
+            .orderBy('createdAt', descending: true)
+            .limit(2)
+            .get(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+                child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: CircularProgressIndicator()));
+          } else if (snapshot.hasError) {
+            return Center(
+                child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(loc.translate('error_loading_data') ??
+                        "Error loading data.")));
+          } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(
+                child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(loc.translate('no_data_available') ??
+                        "No data available.")));
+          }
+          final docs = snapshot.data!.docs;
+          return Column(
+            children: docs.map((doc) {
+              final data = doc.data() as Map<String, dynamic>;
+              final List<dynamic> imagePaths =
+                  data['imagePaths'] ?? <dynamic>[];
+              String firstImage = 'assets/images/bulletin.png';
+              if (imagePaths.isNotEmpty && imagePaths[0] is String) {
+                firstImage = imagePaths[0];
               }
-              final docs = snapshot.data!.docs;
-              return Column(
-                children: docs.map((doc) {
-                  final data = doc.data() as Map<String, dynamic>;
-                  final List<dynamic> imagePaths =
-                      data['imagePaths'] ?? <dynamic>[];
-                  String firstImage = 'assets/images/bulletin.png';
-                  if (imagePaths.isNotEmpty && imagePaths[0] is String) {
-                    firstImage = imagePaths[0];
-                  }
-                  final String itemTitle = data['title'] as String? ?? '';
-                  final Timestamp ts = (data['createdAt'] is Timestamp)
-                      ? data['createdAt'] as Timestamp
-                      : Timestamp.now();
-                  final DateTime createdAt = ts.toDate();
-                  final Bulletin bullet = Bulletin.fromMap(data, doc.id);
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => FullScreenBulletin(
-                            bulletin: bullet,
-                            username: widget.username,
-                            countryId: widget.countryId,
-                            cityId: widget.cityId,
-                            locationId: widget.locationId,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Card(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 4, horizontal: 8),
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                      child: ListTile(
-                        leading: const Icon(Icons.insert_drive_file,
-                            size: 48, color: Colors.grey),
-                        title: Text(
-                          itemTitle,
-                          style: const TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.bold),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        subtitle: Text(
-                          _formatTimeAgo(createdAt, loc),
-                          style:
-                              const TextStyle(fontSize: 10, color: Colors.grey),
-                        ),
+              final String itemTitle = data['title'] as String? ?? '';
+              final Timestamp ts = (data['createdAt'] is Timestamp)
+                  ? data['createdAt'] as Timestamp
+                  : Timestamp.now();
+              final DateTime createdAt = ts.toDate();
+              final Bulletin bullet = Bulletin.fromMap(data, doc.id);
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => FullScreenBulletin(
+                        bulletin: bullet,
+                        username: widget.username,
+                        countryId: widget.countryId,
+                        cityId: widget.cityId,
+                        locationId: widget.locationId,
                       ),
                     ),
                   );
-                }).toList(),
+                },
+                child: Card(
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                  child: ListTile(
+                    leading: const Icon(Icons.insert_drive_file,
+                        size: 48, color: Colors.grey),
+                    title: Text(
+                      itemTitle,
+                      style: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.bold),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Text(
+                      _formatTimeAgo(createdAt, loc),
+                      style: const TextStyle(fontSize: 10, color: Colors.grey),
+                    ),
+                  ),
+                ),
               );
-            },
-          ),
+            }).toList(),
+          );
+        },
+      ),
     );
   }
 
@@ -897,80 +891,79 @@ class _NewsPortalViewState extends State<NewsPortalView> {
       headerColor: Colors.grey,
       cardColor: Colors.orange[50],
       child: FutureBuilder<QuerySnapshot>(
-            future: _firestore
-                .collection('countries')
-                .doc(_geoCountry.isNotEmpty ? _geoCountry : widget.countryId)
-                .collection('cities')
-                .doc(_geoCity.isNotEmpty ? _geoCity : widget.cityId)
-                .collection('locations')
-                .doc(_geoNeighborhood.isNotEmpty
-                    ? _geoNeighborhood
-                    : widget.locationId)
-                .collection('documents')
-                .orderBy('createdAt', descending: true)
-                .limit(2)
-                .get(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                    child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: CircularProgressIndicator()));
-              } else if (snapshot.hasError) {
-                return Center(
-                    child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text(loc.translate('error_loading_data') ??
-                            "Error loading data.")));
-              } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return Center(
-                    child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text(loc.translate('no_data_available') ??
-                            "No data available.")));
-              }
-              final docs = snapshot.data!.docs;
-              return Column(
-                children: docs.map((doc) {
-                  final data = doc.data() as Map<String, dynamic>;
-                  final String itemTitle = data['title'] as String? ?? '';
-                  final Timestamp ts = (data['createdAt'] is Timestamp)
-                      ? data['createdAt'] as Timestamp
-                      : Timestamp.now();
-                  final DateTime createdAt = ts.toDate();
-                  return GestureDetector(
-                    onTap: () {
-                      final docMap = {'id': doc.id, ...data};
-                      _openDocument(docMap);
-                    },
-                    child: Card(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 4, horizontal: 8),
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                      child: ListTile(
-                        leading: const Icon(Icons.insert_drive_file,
-                            size: 48, color: Colors.grey),
-                        title: Text(
-                          itemTitle,
-                          style: const TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.bold),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        subtitle: Text(
-                          _formatTimeAgo(createdAt, loc),
-                          style:
-                              const TextStyle(fontSize: 10, color: Colors.grey),
-                        ),
-                      ),
+        future: _firestore
+            .collection('countries')
+            .doc(_geoCountry.isNotEmpty ? _geoCountry : widget.countryId)
+            .collection('cities')
+            .doc(_geoCity.isNotEmpty ? _geoCity : widget.cityId)
+            .collection('locations')
+            .doc(_geoNeighborhood.isNotEmpty
+                ? _geoNeighborhood
+                : widget.locationId)
+            .collection('documents')
+            .orderBy('createdAt', descending: true)
+            .limit(2)
+            .get(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+                child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: CircularProgressIndicator()));
+          } else if (snapshot.hasError) {
+            return Center(
+                child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(loc.translate('error_loading_data') ??
+                        "Error loading data.")));
+          } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(
+                child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(loc.translate('no_data_available') ??
+                        "No data available.")));
+          }
+          final docs = snapshot.data!.docs;
+          return Column(
+            children: docs.map((doc) {
+              final data = doc.data() as Map<String, dynamic>;
+              final String itemTitle = data['title'] as String? ?? '';
+              final Timestamp ts = (data['createdAt'] is Timestamp)
+                  ? data['createdAt'] as Timestamp
+                  : Timestamp.now();
+              final DateTime createdAt = ts.toDate();
+              return GestureDetector(
+                onTap: () {
+                  final docMap = {'id': doc.id, ...data};
+                  _openDocument(docMap);
+                },
+                child: Card(
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                  child: ListTile(
+                    leading: const Icon(Icons.insert_drive_file,
+                        size: 48, color: Colors.grey),
+                    title: Text(
+                      itemTitle,
+                      style: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.bold),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  );
-                }).toList(),
+                    subtitle: Text(
+                      _formatTimeAgo(createdAt, loc),
+                      style: const TextStyle(fontSize: 10, color: Colors.grey),
+                    ),
+                  ),
+                ),
               );
-            },
-          ),
+            }).toList(),
+          );
+        },
+      ),
     );
   }
 
@@ -992,49 +985,48 @@ class _NewsPortalViewState extends State<NewsPortalView> {
         );
       },
       child: _works.isEmpty
-              ? Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(loc.translate('no_active_works') ??
-                      "Trenutno nema radova."),
-                )
-              : ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _works.length,
-                  itemBuilder: (context, index) {
-                    final work = _works[index];
-                    final String description = work['description'] ?? '';
-                    final String details = work['details'] ?? '';
-                    final DateTime startDate =
-                        DateTime.parse(work['startDate']);
-                    final DateTime endDate = DateTime.parse(work['endDate']);
-                    final dateFormat = DateFormat('dd.MM.yyyy');
-                    return Card(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 4, horizontal: 8),
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(description,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16)),
-                            const SizedBox(height: 5),
-                            Text(details),
-                            const SizedBox(height: 5),
-                            Text(
-                                '${loc.translate('date') ?? 'Date'}: ${dateFormat.format(startDate)} - ${dateFormat.format(endDate)}',
-                                style: const TextStyle(fontSize: 12)),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
+          ? Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                  loc.translate('no_active_works') ?? "Trenutno nema radova."),
+            )
+          : ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: _works.length,
+              itemBuilder: (context, index) {
+                final work = _works[index];
+                final String description = work['description'] ?? '';
+                final String details = work['details'] ?? '';
+                final DateTime startDate = DateTime.parse(work['startDate']);
+                final DateTime endDate = DateTime.parse(work['endDate']);
+                final dateFormat = DateFormat('dd.MM.yyyy');
+                return Card(
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(description,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16)),
+                        const SizedBox(height: 5),
+                        Text(details),
+                        const SizedBox(height: 5),
+                        Text(
+                            '${loc.translate('date') ?? 'Date'}: ${dateFormat.format(startDate)} - ${dateFormat.format(endDate)}',
+                            style: const TextStyle(fontSize: 12)),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
     );
   }
 
@@ -1083,32 +1075,32 @@ class _NewsPortalViewState extends State<NewsPortalView> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-            ),
-            child: _parkingPreview.isEmpty
-                ? Text(loc.translate('no_active_parking_requests') ??
-                    "Trenutno nema aktivnih (pending) parking zahtjeva.")
-                : Column(
-                    children: _parkingPreview.map((req) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ParkingCommunityScreen(
-                                username: widget.username,
-                                countryId: widget.countryId,
-                                cityId: widget.cityId,
-                                locationId: widget.locationId,
-                                locationAdmin: widget.locationAdmin,
-                              ),
-                            ),
-                          );
-                        },
-                        child: _buildSingleParkingRequestPreview(req, loc),
+        ),
+        child: _parkingPreview.isEmpty
+            ? Text(loc.translate('no_active_parking_requests') ??
+                "Trenutno nema aktivnih (pending) parking zahtjeva.")
+            : Column(
+                children: _parkingPreview.map((req) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ParkingCommunityScreen(
+                            username: widget.username,
+                            countryId: widget.countryId,
+                            cityId: widget.cityId,
+                            locationId: widget.locationId,
+                            locationAdmin: widget.locationAdmin,
+                          ),
+                        ),
                       );
-                    }).toList(),
-                  ),
-          ),
+                    },
+                    child: _buildSingleParkingRequestPreview(req, loc),
+                  );
+                }).toList(),
+              ),
+      ),
     );
   }
 
@@ -1206,37 +1198,35 @@ class _NewsPortalViewState extends State<NewsPortalView> {
         );
       },
       child: _commutePreview.isEmpty
-              ? Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: Text(loc.translate('no_offered_rides') ??
-                      "Trenutno nema ponuđenih vožnji."),
-                )
-              : Column(
-                  children: _commutePreview
-                      .map((ride) => GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => CommuteRideDetailScreen(
-                                    rideId: ride.rideId,
-                                    userId: _auth.currentUser?.uid ?? '',
-                                  ),
-                                ),
-                              );
-                            },
-                            child: CommutePreviewCard(
-                              ride: ride,
-                              loc: loc,
-                              formatTimeAgo: _formatTimeAgo,
+          ? Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Text(loc.translate('no_offered_rides') ??
+                  "Trenutno nema ponuđenih vožnji."),
+            )
+          : Column(
+              children: _commutePreview
+                  .map((ride) => GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => CommuteRideDetailScreen(
+                                rideId: ride.rideId,
+                                userId: _auth.currentUser?.uid ?? '',
+                              ),
                             ),
-                          ))
-                      .toList(),
-                ),
+                          );
+                        },
+                        child: CommutePreviewCard(
+                          ride: ride,
+                          loc: loc,
+                          formatTimeAgo: _formatTimeAgo,
+                        ),
+                      ))
+                  .toList(),
+            ),
     );
   }
-
 
   Future<void> _openDocument(Map<String, dynamic> docData) async {
     try {
