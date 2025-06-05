@@ -8,7 +8,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -41,6 +40,7 @@ import '../local/screens/local_home_screen.dart'; // Postovi – očekuje userna
 import 'blog_screen.dart'; // Službene obavijesti – očekuje username, countryId, cityId, locationId
 import 'marketplace_screen.dart'; // Marketplace – očekuje username, countryId, cityId, locationId
 import '../commute_screens/commute_rides_list_screen.dart'; // Commute – očekuje username, countryId, cityId, locationId
+import '../commute_widgets/commute_preview_card.dart';
 import 'games_screen.dart'; // Kviz – očekuje username, countryId, cityId, locationId
 import 'construction_screen.dart'; // Buka (radovi) – očekuje username, countryId, cityId, locationId
 import 'bulletin_board_screen.dart'; // Bulletin – očekuje username, countryId, cityId, locationId
@@ -138,8 +138,6 @@ class _NewsPortalViewState extends State<NewsPortalView> {
   // Commute preview (vožnje)
   List<Ride> _commutePreview = [];
 
-  // Kontroleri za male mape u commute preview karticama
-  final Map<String, Completer<GoogleMapController>> _smallMapControllers = {};
 
   // Dodan ScrollController za RefreshIndicator
   final ScrollController _scrollController = ScrollController();
@@ -1228,129 +1226,17 @@ class _NewsPortalViewState extends State<NewsPortalView> {
                                 ),
                               );
                             },
-                            child: _buildCommutePreviewCard(ride, loc),
+                            child: CommutePreviewCard(
+                              ride: ride,
+                              loc: loc,
+                              formatTimeAgo: _formatTimeAgo,
+                            ),
                           ))
                       .toList(),
                 ),
     );
   }
 
-  Widget _buildCommutePreviewCard(Ride ride, LocalizationService loc) {
-    final String driverName = ride.driverName;
-    final DateTime createdAt = ride.createdAt.toDate();
-    final double startLat = ride.startLocation.latitude;
-    final double startLng = ride.startLocation.longitude;
-    final double endLat = ride.endLocation.latitude;
-    final double endLng = ride.endLocation.longitude;
-    final String rideId = ride.rideId;
-
-    List<LatLng> routeLatLng = [];
-    for (var gp in ride.route) {
-      routeLatLng.add(LatLng(gp.latitude, gp.longitude));
-    }
-    _smallMapControllers.putIfAbsent(
-        rideId, () => Completer<GoogleMapController>());
-
-    final startMarker = Marker(
-      markerId: MarkerId('start_$rideId'),
-      position: LatLng(startLat, startLng),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-    );
-    final endMarker = Marker(
-      markerId: MarkerId('end_$rideId'),
-      position: LatLng(endLat, endLng),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-    );
-    final markers = {startMarker, endMarker};
-
-    final Set<Polyline> polylines = {};
-    if (routeLatLng.isNotEmpty) {
-      polylines.add(
-        Polyline(
-          polylineId: PolylineId('ride_$rideId'),
-          color: Colors.blue,
-          width: 4,
-          points: routeLatLng,
-        ),
-      );
-    }
-
-    final List<LatLng> latLngList = [
-      LatLng(startLat, startLng),
-      LatLng(endLat, endLng),
-      ...routeLatLng
-    ];
-    LatLngBounds? bounds;
-    if (latLngList.isNotEmpty) {
-      double minLat = latLngList.first.latitude;
-      double maxLat = latLngList.first.latitude;
-      double minLng = latLngList.first.longitude;
-      double maxLng = latLngList.first.longitude;
-      for (var ll in latLngList) {
-        if (ll.latitude < minLat) minLat = ll.latitude;
-        if (ll.latitude > maxLat) maxLat = ll.latitude;
-        if (ll.longitude < minLng) minLng = ll.longitude;
-        if (ll.longitude > maxLng) maxLng = ll.longitude;
-      }
-      bounds = LatLngBounds(
-        southwest: LatLng(minLat, minLng),
-        northeast: LatLng(maxLat, maxLng),
-      );
-    }
-
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "${loc.translate('driver') ?? 'Driver'}: $driverName",
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 4),
-            Text(
-                "${loc.translate('start_address') ?? 'Polazište'}: ${ride.startAddress}"),
-            Text(
-                "${loc.translate('destination') ?? 'Odredište'}: ${ride.endAddress}"),
-            const SizedBox(height: 4),
-            Text(
-              "${loc.translate('published') ?? 'Objavljeno'}: ${_formatTimeAgo(createdAt, loc)}",
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
-            ),
-            const SizedBox(height: 8),
-            SizedBox(
-              height: 120,
-              child: GoogleMap(
-                onMapCreated: (controller) async {
-                  if (!_smallMapControllers[rideId]!.isCompleted) {
-                    _smallMapControllers[rideId]!.complete(controller);
-                  }
-                  if (bounds != null) {
-                    await Future.delayed(const Duration(milliseconds: 300));
-                    controller.animateCamera(
-                      CameraUpdate.newLatLngBounds(bounds, 50),
-                    );
-                  }
-                },
-                markers: markers,
-                polylines: polylines,
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(startLat, startLng),
-                  zoom: 4.5,
-                ),
-                zoomControlsEnabled: false,
-                myLocationEnabled: false,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   Future<void> _openDocument(Map<String, dynamic> docData) async {
     try {
@@ -1454,7 +1340,6 @@ class _NewsPortalViewState extends State<NewsPortalView> {
                   cityId: widget.cityId,
                   locationId: widget.locationId,
                   auth: _auth,
-                  smallMapControllers: _smallMapControllers,
                   formatTimeAgo: _formatTimeAgo,
                 ),
                 const SizedBox(height: 16),
