@@ -224,23 +224,30 @@ class _CommuteRideDetailScreenState extends State<CommuteRideDetailScreen> {
             flex: 2,
             child: Stack(
               children: [
-                GoogleMap(
-                  onMapCreated: (controller) {
-                    _mapController = controller;
-                    if (_initialBounds != null) {
-                      _mapController?.moveCamera(
-                        CameraUpdate.newLatLngBounds(_initialBounds!, 60),
-                      );
-                    }
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _isFullScreen = true;
+                    });
                   },
-                  markers: _markers.union(_exitMarkers),
-                  polylines: _polylines,
-                  initialCameraPosition: const CameraPosition(
-                    target: LatLng(45.8150, 15.9819),
-                    zoom: 6,
+                  child: GoogleMap(
+                    onMapCreated: (controller) {
+                      _mapController = controller;
+                      if (_initialBounds != null) {
+                        _mapController?.moveCamera(
+                          CameraUpdate.newLatLngBounds(_initialBounds!, 60),
+                        );
+                      }
+                    },
+                    markers: _markers.union(_exitMarkers),
+                    polylines: _polylines,
+                    initialCameraPosition: const CameraPosition(
+                      target: LatLng(45.8150, 15.9819),
+                      zoom: 6,
+                    ),
+                    myLocationEnabled: false,
+                    myLocationButtonEnabled: false,
                   ),
-                  myLocationEnabled: false,
-                  myLocationButtonEnabled: false,
                 ),
               ],
             ),
