@@ -48,6 +48,7 @@ import 'bulletin_board_screen.dart'; // Bulletin – očekuje username, countryI
 
 // Dodajemo RideViewModel
 import 'news_portal/news_portal_sections.dart';
+import '../viewmodels/ride_view_model.dart';
 
 // Import DocumentsScreen (sada je navigacija u DocumentsScreen)
 import 'documents_screen.dart';

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../services/localization_service.dart';
-import '../games_screen.dart';
+import '../games_screen.dart' show GamesScreen;
 import 'widgets.dart';
 import '../news_portal_view.dart' show ProfileAvatar; // to use ProfileAvatar class defined there
 
