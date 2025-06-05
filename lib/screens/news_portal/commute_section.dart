@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 
 import '../../models/ride_model.dart';
 import '../../services/localization_service.dart';
-import '../commute_screens/commute_ride_detail_screen.dart';
-import '../commute_screens/commute_rides_list_screen.dart';
+import '../../commute_screens/commute_ride_detail_screen.dart';
+import '../../commute_screens/commute_rides_list_screen.dart';
 import 'widgets.dart';
 import '../../commute_widgets/commute_preview_card.dart';
 

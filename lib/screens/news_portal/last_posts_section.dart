@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../services/localization_service.dart';
-import '../local/screens/local_home_screen.dart';
-import '../local/screens/post_detail_screen.dart';
+import '../../local/screens/local_home_screen.dart';
+import '../../local/screens/post_detail_screen.dart';
 import 'widgets.dart';
 
 class LastPostsSection extends StatelessWidget {
